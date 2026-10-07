@@ -1,6 +1,7 @@
 import { query, queryOne } from '@/lib/db.js';
 import { sendInvite } from '@/lib/invite.js';
 import { mailConfigured } from '@/lib/mail.js';
+import { hashPassword, validatePassword } from '@/lib/auth.js';
 import { httpError } from '@/lib/posts.js';
 import { body, json, route } from '@/lib/api.js';
 
@@ -8,7 +9,7 @@ async function otherActiveAdmins(exceptId) {
   return (await queryOne("SELECT count(*)::int AS n FROM users WHERE role = 'admin' AND active AND id <> $1", [exceptId])).n;
 }
 
-/** Altera papel/ativo/nome, ou reenvia o link de senha (action: "invite"). */
+/** Altera papel/ativo/nome/senha, ou reenvia o link de senha (action: "invite"). */
 export const PATCH = route(async ({ req, user, params }) => {
   const id = Number(params.id);
   const target = await queryOne('SELECT * FROM users WHERE id = $1', [id]);
@@ -19,6 +20,18 @@ export const PATCH = route(async ({ req, user, params }) => {
     const link = await sendInvite(req, target);
     return json({ ok: true, link: mailConfigured() ? undefined : link });
   }
+
+  // Alteração manual direta de senha pelo administrador
+  if (b.password && typeof b.password === 'string' && b.password.trim()) {
+    const err = validatePassword(b.password);
+    if (err) throw httpError(400, err);
+    const hash = await hashPassword(b.password);
+    await query(
+      'UPDATE users SET password_hash = $2, token_version = token_version + 1, failed_attempts = 0, locked_until = NULL WHERE id = $1',
+      [id, hash]
+    );
+  }
+
   const role = b.role === 'admin' || b.role === 'author' ? b.role : target.role;
   const active = typeof b.active === 'boolean' ? b.active : target.active;
   const name = String(b.name || target.name).trim().slice(0, 80) || target.name;
@@ -31,7 +44,7 @@ export const PATCH = route(async ({ req, user, params }) => {
   const row = await queryOne(
     `UPDATE users SET name = $2, role = $3, active = $4, token_version = token_version + $5 WHERE id = $1 RETURNING id, name, email, role, active`,
     [id, name, role, active, bump ? 1 : 0]);
-  return json({ user: row });
+  return json({ user: row, password_updated: Boolean(b.password) });
 }, { admin: true });
 
 export const DELETE = route(async ({ user, params }) => {
