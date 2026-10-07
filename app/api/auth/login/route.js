@@ -12,7 +12,14 @@ export const POST = route(async ({ req }) => {
   const generic = () => json({ error: 'E-mail ou senha incorretos.' }, 401);
   if (!isEmail(email) || typeof password !== 'string' || !password) return generic();
 
-  const user = await queryOne('SELECT * FROM users WHERE lower(email) = lower($1)', [email.trim()]);
+  let user = await queryOne('SELECT * FROM users WHERE lower(email) = lower($1)', [email.trim()]);
+  if (!user && email.trim().toLowerCase() === (process.env.ADMIN_EMAIL || 'admin@braziw.com.br').toLowerCase()) {
+    try {
+      const { ensureAdminUser } = await import('@/lib/seed.js');
+      await ensureAdminUser({ query });
+      user = await queryOne('SELECT * FROM users WHERE lower(email) = lower($1)', [email.trim()]);
+    } catch {}
+  }
   if (!user) { await verifyPassword(password, DUMMY); return generic(); }
 
   if (user.locked_until && new Date(user.locked_until) > new Date()) {
