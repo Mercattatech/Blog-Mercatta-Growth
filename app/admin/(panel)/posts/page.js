@@ -6,7 +6,14 @@ import { Icon } from '@/components/admin/ui.js';
 
 export const metadata = { title: 'Artigos' };
 
-const TABS = [['', 'Todos'], ['draft', 'Rascunhos'], ['pending', 'Aguardando aprovação'], ['scheduled', 'Agendados'], ['published', 'Publicados']];
+const TABS = [
+  ['', 'Todos'],
+  ['draft', 'Rascunhos'],
+  ['pending', 'Aguardando aprovação'],
+  ['scheduled', 'Agendados'],
+  ['published', 'Publicados'],
+  ['trash', 'Lixeira 🗑️'],
+];
 
 export default async function PostsPage({ searchParams }) {
   const user = await requireUser();
@@ -21,13 +28,33 @@ export default async function PostsPage({ searchParams }) {
   ]);
   const pages = Math.max(1, Math.ceil(total / limit));
   const href = (o) => { const p = new URLSearchParams({ ...(status && { status }), ...(q && { q }), ...o }); [...p].forEach(([k, v]) => !v && p.delete(k)); const s = p.toString(); return `/admin/posts/${s ? `?${s}` : ''}`; };
-  const n = { '': counts.draft + counts.pending + counts.scheduled + counts.published, draft: counts.draft, pending: counts.pending, scheduled: counts.scheduled, published: counts.published };
+  const n = {
+    '': counts.draft + counts.pending + counts.scheduled + counts.published,
+    draft: counts.draft,
+    pending: counts.pending,
+    scheduled: counts.scheduled,
+    published: counts.published,
+    trash: counts.trash || 0,
+  };
 
   return (
     <>
       <div className="adm-head">
-        <div><h2>Artigos</h2><p>{total} {total === 1 ? 'artigo' : 'artigos'}{q ? ` para “${q}”` : ''}</p></div>
-        <Link className="a-btn primary" href="/admin/posts/new/"><Icon name="plus" size={17} />Novo artigo</Link>
+        <div>
+          <h2>{status === 'trash' ? 'Lixeira Universal (30 dias)' : 'Artigos'}</h2>
+          <p>
+            {status === 'trash'
+              ? `${total} ${total === 1 ? 'artigo na lixeira' : 'artigos na lixeira'}. Itens são excluídos definitivamente após 30 dias.`
+              : `${total} ${total === 1 ? 'artigo' : 'artigos'}${q ? ` para “${q}”` : ''}`}
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          {status !== 'trash' && (
+            <Link className="a-btn primary" href="/admin/posts/new/">
+              <Icon name="plus" size={17} /> Novo artigo
+            </Link>
+          )}
+        </div>
       </div>
       <div className="a-tabs">
         {TABS.map(([k, label]) => <Link key={k} href={href({ status: k, page: '' })} className={`a-tab${status === k ? ' is-active' : ''}`}>{label} <small>({n[k]})</small></Link>)}
@@ -40,8 +67,12 @@ export default async function PostsPage({ searchParams }) {
       </form>
       <div className="a-card" style={{ padding: 0, overflow: 'hidden' }}>
         {rows.length === 0 ? (
-          <div className="a-empty"><div className="big">📝</div><p>Nenhum artigo encontrado.</p><Link className="a-btn primary" href="/admin/posts/new/">Escrever o primeiro</Link></div>
-        ) : <PostsTable rows={rows} />}
+          <div className="a-empty">
+            <div className="big">{status === 'trash' ? '🗑️' : '📝'}</div>
+            <p>{status === 'trash' ? 'A lixeira está vazia.' : 'Nenhum artigo encontrado.'}</p>
+            {status !== 'trash' && <Link className="a-btn primary" href="/admin/posts/new/">Escrever o primeiro</Link>}
+          </div>
+        ) : <PostsTable rows={rows} isTrash={status === 'trash'} totalTrash={counts.trash || 0} />}
       </div>
       {pages > 1 && (
         <div className="a-pager">

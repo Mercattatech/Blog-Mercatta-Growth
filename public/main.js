@@ -67,9 +67,14 @@
 
   /* busca */
   var index = null, loading = null;
+  function getTenantParam() {
+    return new URLSearchParams(location.search).get('tenant') || '';
+  }
   function load() {
     if (index) return Promise.resolve(index);
-    return loading || (loading = fetch('/api/search-index/').then(function (r) { return r.json(); }).then(function (d) { return (index = d); }));
+    var tp = getTenantParam();
+    var fetchUrl = '/api/search-index/' + (tp ? '?tenant=' + encodeURIComponent(tp) : '');
+    return loading || (loading = fetch(fetchUrl).then(function (r) { return r.json(); }).then(function (d) { return (index = d); }));
   }
   function search(q) {
     var terms = norm(q).split(/\s+/).filter(Boolean);
@@ -90,9 +95,12 @@
   function render(q) {
     if (!q.trim()) { results.innerHTML = '<div class="sr-empty">Comece a digitar para buscar entre os artigos…</div>'; return; }
     load().then(function () {
+      var tp = getTenantParam();
+      var tSuffix = tp ? '?tenant=' + encodeURIComponent(tp) : '';
       var r = search(q).slice(0, 7);
       results.innerHTML = r.length ? r.map(function (p) {
-        return '<a class="sr-item" href="' + p.u + '"><img src="' + p.i + '" alt="" loading="lazy"><span><strong>' + esc(p.t) + '</strong><small>' + esc(p.c) + '</small></span></a>';
+        var itemHref = p.u + tSuffix;
+        return '<a class="sr-item" href="' + itemHref + '"><img src="' + p.i + '" alt="" loading="lazy"><span><strong>' + esc(p.t) + '</strong><small>' + esc(p.c) + '</small></span></a>';
       }).join('') : '<div class="sr-empty">Nenhum resultado para “' + esc(q) + '”.</div>';
     });
   }
@@ -116,12 +124,15 @@
     var count = $('#searchCount');
     if (!q.trim()) { count.textContent = 'Digite um assunto para começar.'; }
     else load().then(function () {
+      var tp = getTenantParam();
+      var tSuffix = tp ? '?tenant=' + encodeURIComponent(tp) : '';
       var r = search(q);
       $('#searchTitle').textContent = 'Resultados para “' + q + '”';
       count.textContent = r.length + (r.length === 1 ? ' artigo encontrado' : ' artigos encontrados');
       grid.innerHTML = r.slice(0, 60).map(function (p, i) {
         var d = p.d.split('-');
-        return '<article class="card reveal in"><a class="card-media fit" style="--bg:url(\'' + p.i + '\')" href="' + p.u + '"><img src="' + p.i + '" alt="" loading="lazy"></a><div class="card-body"><span class="pill">' + esc(p.c) + '</span><h3 class="card-title"><a href="' + p.u + '">' + esc(p.t) + '</a></h3><p class="card-excerpt">' + esc(p.e) + '</p><div class="meta"><time>' + d[2] + '/' + d[1] + '/' + d[0] + '</time></div></div></article>';
+        var cardHref = p.u + tSuffix;
+        return '<article class="card reveal in"><a class="card-media fit" style="--bg:url(\'' + p.i + '\')" href="' + cardHref + '"><img src="' + p.i + '" alt="" loading="lazy"></a><div class="card-body"><span class="pill">' + esc(p.c) + '</span><h3 class="card-title"><a href="' + cardHref + '">' + esc(p.t) + '</a></h3><p class="card-excerpt">' + esc(p.e) + '</p><div class="meta"><time>' + d[2] + '/' + d[1] + '/' + d[0] + '</time></div></div></article>';
       }).join('');
     });
   }

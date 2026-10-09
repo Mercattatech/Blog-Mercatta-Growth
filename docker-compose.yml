@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mercatta_blog_app
+    restart: always
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - SITE_URL=${SITE_URL:-http://localhost:3000}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:${POSTGRES_PASSWORD:-postgrespassword}@postgres:5432/${POSTGRES_DB:-mercatta_blog}?sslmode=disable}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-flash-latest}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@braziw.com.br}
+      - ADMIN_NAME=${ADMIN_NAME:-Administrador}
+      - SUPERADMIN_EMAIL=${SUPERADMIN_EMAIL:-admin@grupomercatta.com.br}
+      - SUPERADMIN_NAME=${SUPERADMIN_NAME:-Mercatta Super Admin}
+      - MERCATTA_DOMAIN=${MERCATTA_DOMAIN:-grupomercatta.com.br}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mercatta_network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: mercatta_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespassword}
+      POSTGRES_DB: ${POSTGRES_DB:-mercatta_blog}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mercatta_blog}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mercatta_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  mercatta_network:
+    driver: bridge

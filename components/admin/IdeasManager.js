@@ -7,22 +7,75 @@ const STATUS = {
   suggested: ['Nova ideia', 'draft'], writing: ['Escrevendo…', 'pending'], written: ['Artigo criado', 'published'], failed: ['Falhou', 'off'],
 };
 
-export default function IdeasManager({ initial, categories, aiOn }) {
+export default function IdeasManager({
+  initial,
+  categories,
+  aiOn,
+  isSuperAdmin = false,
+  tenants = [],
+  userTenantId = null,
+}) {
   const router = useRouter();
   const [ideas, setIdeas] = useState(initial);
   const [gen, setGen] = useState(false);
   const [writing, setWriting] = useState(0);
   const [edit, setEdit] = useState(null);
+  const [selectedTenantId, setSelectedTenantId] = useState(userTenantId || (tenants[0]?.id ? String(tenants[0].id) : ''));
+  const [instantOpen, setInstantOpen] = useState(false);
+  const [generatingInstant, setGeneratingInstant] = useState(false);
+  const [instantForm, setInstantForm] = useState({
+    topic: '',
+    category_slug: '',
+    tenantId: userTenantId || (tenants[0]?.id ? String(tenants[0].id) : ''),
+    publishImmediate: false,
+  });
+
   const catName = (slug) => categories.find((c) => c.slug === slug)?.name || slug || 'Sem categoria';
+
+  const handleTenantChange = async (newTenantId) => {
+    setSelectedTenantId(newTenantId);
+    setInstantForm((prev) => ({ ...prev, tenantId: newTenantId }));
+    try {
+      const url = newTenantId ? `/api/admin/ideas/?tenantId=${newTenantId}` : '/api/admin/ideas/';
+      const res = await api(url);
+      setIdeas(res.ideas || []);
+    } catch (e) {
+      toast(e.message, 'err');
+    }
+  };
 
   async function generate() {
     setGen(true);
     try {
-      const r = await api('/api/admin/ideas/', { method: 'POST' });
+      const r = await api('/api/admin/ideas/', {
+        method: 'POST',
+        data: { tenantId: selectedTenantId || undefined },
+      });
       setIdeas((cur) => [...r.ideas, ...cur]);
       toast(`${r.ideas.length} novas ideias geradas!`);
     } catch (e) { toast(e.message, 'err'); } finally { setGen(false); }
   }
+
+  async function generateInstantArticle(e) {
+    e.preventDefault();
+    setGeneratingInstant(true);
+    try {
+      const res = await api('/api/admin/ai/instant-article/', {
+        method: 'POST',
+        data: {
+          ...instantForm,
+          tenantId: instantForm.tenantId || selectedTenantId || undefined,
+        },
+      });
+      toast(`Artigo "${res.title}" gerado com sucesso! Abrindo editor...`, 'ok');
+      setInstantOpen(false);
+      router.push(`/admin/posts/${res.post_id}/`);
+    } catch (err) {
+      toast(err.message || 'Erro ao gerar artigo instantâneo.', 'err');
+      setGeneratingInstant(false);
+    }
+  }
+
   async function approve(idea) {
     setWriting(idea.id);
     setIdeas((cur) => cur.map((i) => (i.id === idea.id ? { ...i, status: 'writing' } : i)));
@@ -53,9 +106,48 @@ export default function IdeasManager({ initial, categories, aiOn }) {
 
   return (
     <>
-      <div className="adm-head">
-        <div><h2>Ideias com IA</h2><p>A IA sugere pautas com base no treinamento do blog. Aprove as boas e ela escreve o artigo completo.</p></div>
-        <button className="a-btn blue" onClick={generate} disabled={gen || !!writing || !aiOn}>{gen ? <><Spin />Gerando ideias…</> : <><Icon name="spark" size={17} />Gerar novas ideias</>}</button>
+      <div className="adm-head" style={{ flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h2>Ideias & Artigos com IA</h2>
+          <p>Gere artigos automáticos completos ou aprove sugestões de pautas baseadas no treinamento da empresa.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+          {isSuperAdmin && tenants.length > 0 && (
+            <select
+              value={selectedTenantId}
+              onChange={(e) => handleTenantChange(e.target.value)}
+              className="a-select sm"
+              style={{ minWidth: '160px', padding: '0.45rem 0.75rem' }}
+              title="Filtrar por Empresa"
+            >
+              {tenants.map((t) => (
+                <option key={t.id} value={t.id}>
+                  🏢 {t.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <button
+            type="button"
+            className="a-btn primary"
+            onClick={() => setInstantOpen(true)}
+            disabled={gen || !!writing || !aiOn}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}
+          >
+            <Icon name="spark" size={16} />
+            ⚡ Gerar Artigo Automático
+          </button>
+
+          <button
+            type="button"
+            className="a-btn blue"
+            onClick={generate}
+            disabled={gen || !!writing || !aiOn}
+          >
+            {gen ? <><Spin />Gerando ideias…</> : <><Icon name="plus" size={16} />Sugerir pautas</>}
+          </button>
+        </div>
       </div>
       {!aiOn && <div className="a-note warn" style={{ marginBottom: 16 }}>A IA não está configurada. Crie uma chave gratuita no <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style={{ textDecoration: 'underline' }}>Google AI Studio</a> e coloque em <code>GEMINI_API_KEY</code> no arquivo <code>.env.local</code> (ou nas variáveis da Vercel). Reinicie o servidor.</div>}
 
@@ -124,6 +216,136 @@ export default function IdeasManager({ initial, categories, aiOn }) {
                 <option value="">Sem categoria</option>{categories.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
               </select></div>
             <div className="a-row end"><button type="button" className="a-btn ghost" onClick={() => setEdit(null)}>Cancelar</button><button className="a-btn blue">Salvar</button></div>
+          </form>
+        </div>
+      )}
+
+      {instantOpen && (
+        <div
+          className="a-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Gerar Artigo Automático"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget && !generatingInstant) setInstantOpen(false);
+          }}
+        >
+          <form className="a-card" onSubmit={generateInstantArticle} style={{ maxWidth: 540 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 4 }}>
+              <span style={{ fontSize: '1.4rem' }}>⚡</span>
+              <h3 style={{ margin: 0 }}>Gerador Automático de Artigo</h3>
+            </div>
+            <p className="sub" style={{ marginBottom: 16 }}>
+              A IA vai pesquisar, estruturar e redigir um artigo completo otimizado para SEO baseado na identidade e treinamento da empresa.
+            </p>
+
+            {isSuperAdmin && tenants.length > 0 && (
+              <div className="a-field">
+                <label htmlFor="inst-tenant">Empresa Destino</label>
+                <select
+                  id="inst-tenant"
+                  className="a-select"
+                  value={instantForm.tenantId}
+                  onChange={(e) => setInstantForm({ ...instantForm, tenantId: e.target.value })}
+                  disabled={generatingInstant}
+                >
+                  {tenants.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      🏢 {t.name} ({t.slug})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="a-field">
+              <label htmlFor="inst-topic">
+                Tema / Pauta do Artigo <span style={{ color: 'var(--red, #e53e3e)' }}>*</span>
+              </label>
+              <input
+                id="inst-topic"
+                className="a-input"
+                placeholder="Ex: Como a inteligência artificial reduz custos operacionais em 2026"
+                value={instantForm.topic}
+                onChange={(e) => setInstantForm({ ...instantForm, topic: e.target.value })}
+                required
+                disabled={generatingInstant}
+              />
+              <span className="muted" style={{ fontSize: '0.8rem', marginTop: 4, display: 'block' }}>
+                Deixe bem específico ou adicione tópicos chave que você gostaria que fossem abordados.
+              </span>
+            </div>
+
+            <div className="a-field">
+              <label htmlFor="inst-cat">Categoria do Blog</label>
+              <select
+                id="inst-cat"
+                className="a-select"
+                value={instantForm.category_slug}
+                onChange={(e) => setInstantForm({ ...instantForm, category_slug: e.target.value })}
+                disabled={generatingInstant}
+              >
+                <option value="">Automática / Sem categoria</option>
+                {categories.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="a-field" style={{ marginTop: 8 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={instantForm.publishImmediate}
+                  onChange={(e) => setInstantForm({ ...instantForm, publishImmediate: e.target.checked })}
+                  disabled={generatingInstant}
+                  style={{ width: 18, height: 18, cursor: 'pointer' }}
+                />
+                <span>
+                  <strong>Publicar imediatamente</strong> (se desmarcado, ficará como rascunho para você revisar)
+                </span>
+              </label>
+            </div>
+
+            {generatingInstant && (
+              <div className="writing" style={{ margin: '14px 0' }} role="status">
+                <div className="ai-orb" />
+                <div>
+                  <strong>A IA está redigindo o artigo completo…</strong>
+                  <br />
+                  <span className="muted">Isso pode levar de 30 a 60 segundos. Não recarregue a página.</span>
+                </div>
+              </div>
+            )}
+
+            <div className="a-row end" style={{ gap: '0.5rem', marginTop: 16 }}>
+              <button
+                type="button"
+                className="a-btn ghost"
+                onClick={() => setInstantOpen(false)}
+                disabled={generatingInstant}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="a-btn primary"
+                disabled={generatingInstant || !instantForm.topic.trim()}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}
+              >
+                {generatingInstant ? (
+                  <>
+                    <Spin /> Escrevendo com IA…
+                  </>
+                ) : (
+                  <>
+                    <Icon name="spark" size={16} /> Gerar Artigo Agora
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
       )}

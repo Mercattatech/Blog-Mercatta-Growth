@@ -17,7 +17,8 @@ export const POST = route(async ({ user, params }) => {
 
   await query("UPDATE ideas SET status = 'writing', error = NULL WHERE id = $1", [id]);
   try {
-    const a = await writeArticle(idea);
+    const tenantId = user.tenant_id || idea.tenant_id || 1;
+    const a = await writeArticle(idea, tenantId);
     const category = a.category_slug || idea.category_slug;
     const post = await savePost({
       title: a.title || idea.title,
@@ -33,6 +34,7 @@ export const POST = route(async ({ user, params }) => {
       cover_alt: a.cover_alt,
       category_slugs: category ? [category] : [],
       ai_generated: true,
+      tenant_id: tenantId,
       action: 'draft',
     }, user);
     await query("UPDATE ideas SET status = 'written', post_id = $2 WHERE id = $1", [id, post.id]);

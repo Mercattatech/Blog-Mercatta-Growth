@@ -38,6 +38,33 @@ export default async function Dashboard() {
         </div>
       </div>
 
+      {user.role === 'superadmin' && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(168,85,247,0.15))',
+          border: '1px solid rgba(59,130,246,0.3)',
+          borderRadius: 12,
+          padding: '1.25rem',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <div>
+            <strong style={{ fontSize: '1.05rem', color: '#60a5fa', display: 'block' }}>
+              ⚡ Plataforma SaaS Grupo Mercatta — Modo Super Administrador
+            </strong>
+            <span style={{ fontSize: '0.875rem', color: 'var(--muted)' }}>
+              Você tem acesso total para cadastrar novas empresas clientes, configurar domínios próprios e monitorar assinaturas.
+            </span>
+          </div>
+          <Link href="/admin/tenants/" className="a-btn primary sm" style={{ textDecoration: 'none' }}>
+            🏢 Gerenciar Empresas & Domínios →
+          </Link>
+        </div>
+      )}
+
       {warnings.map((w) => <div key={w} className="a-note warn" style={{ marginBottom: 12 }}>⚠️ {w}</div>)}
 
       <div className="a-grid c4" style={{ margin: '18px 0 24px' }}>

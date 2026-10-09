@@ -22,7 +22,32 @@ export default function TrainingForm({ initial, refs: initialRefs, aiOn, model }
   const [found, setFound] = useState([]);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [refiningField, setRefiningField] = useState('');
   const set = (k, v) => { setT((s) => ({ ...s, [k]: v })); setDirty(true); };
+
+  const handleRefineField = async (k, label) => {
+    if (!aiOn) return toast('A chave GEMINI_API_KEY não está configurada.', 'err');
+    setRefiningField(k);
+    try {
+      const res = await api('/api/admin/training/refine/', {
+        method: 'POST',
+        data: {
+          fieldKey: k,
+          fieldLabel: label,
+          currentValue: t[k] || '',
+          currentTraining: t,
+        },
+      });
+      if (res.refined) {
+        set(k, res.refined);
+        toast(`✨ Campo "${label}" aprimorado com sucesso!`);
+      }
+    } catch (err) {
+      toast(err.message || 'Erro ao aprimorar campo.', 'err');
+    } finally {
+      setRefiningField('');
+    }
+  };
 
   useEffect(() => {
     if (q.trim().length < 2) { setFound([]); return undefined; }
@@ -44,7 +69,10 @@ export default function TrainingForm({ initial, refs: initialRefs, aiOn, model }
   return (
     <form onSubmit={save}>
       <div className="adm-head">
-        <div><h2>Treinar a IA</h2><p>Ensine a IA sobre o seu blog. Tudo aqui é usado ao gerar ideias e ao escrever artigos.</p></div>
+        <div>
+          <h2>Treinar a IA</h2>
+          <p>Ensine a IA sobre o seu blog. Use a 🪄 <b>Varinha Mágica</b> nos campos para a IA refinar e aprimorar suas ideias automaticamente!</p>
+        </div>
         <button className="a-btn primary" disabled={saving}>{saving ? <Spin /> : <><Icon name="check" size={17} />Salvar treinamento</>}</button>
       </div>
 
@@ -55,9 +83,34 @@ export default function TrainingForm({ initial, refs: initialRefs, aiOn, model }
 
       <div className="a-grid c2" style={{ alignItems: 'start' }}>
         {FIELDS.map(([k, label, hint, rows]) => (
-          <div className="a-card" key={k} style={{ margin: 0 }}>
+          <div className="a-card" key={k} style={{ margin: 0, position: 'relative' }}>
             <div className="a-field" style={{ marginBottom: 0 }}>
-              <label htmlFor={`t-${k}`}>{label}</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                <label htmlFor={`t-${k}`} style={{ margin: 0, fontWeight: 700 }}>{label}</label>
+                <button
+                  type="button"
+                  onClick={() => handleRefineField(k, label)}
+                  disabled={refiningField === k || !aiOn}
+                  title="A IA lê o que você escreveu e reformula de forma profissional e estratégica"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    background: refiningField === k ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)',
+                    border: '1px solid rgba(59, 130, 246, 0.35)',
+                    color: '#60a5fa',
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '8px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: refiningField === k ? 'wait' : 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {refiningField === k ? <Spin /> : <span>🪄</span>}
+                  <span>{refiningField === k ? 'Reformulando…' : 'Varinha Mágica'}</span>
+                </button>
+              </div>
               <textarea id={`t-${k}`} className="a-textarea" rows={rows} value={t[k] || ''} onChange={(e) => set(k, e.target.value)} maxLength={4000} />
               <span className="a-hint">{hint}</span>
             </div>

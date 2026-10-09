@@ -30,7 +30,7 @@ function ChipInput({ id, items, onChange, placeholder, max = 15 }) {
   );
 }
 
-export default function PostEditor({ initial, categories, role, siteUrl, aiNote }) {
+export default function PostEditor({ initial, categories, role, siteUrl, aiNote, tenant = {} }) {
   const router = useRouter();
   const isAdmin = role === 'admin';
   const [id, setId] = useState(initial.id || null);
@@ -264,6 +264,7 @@ export default function PostEditor({ initial, categories, role, siteUrl, aiNote 
         postTitle={f.title}
         postExcerpt={f.excerpt}
         categoryName={categories.find((c) => f.cats.includes(c.slug))?.name || ''}
+        tenant={tenant}
         onApply={(data) => {
           set('cover_url', data.cover_url);
           set('cover_thumb', data.cover_thumb);
