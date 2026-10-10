@@ -4,9 +4,20 @@ import { Card, Pagination, Sidebar } from '@/components/Parts';
 import { countVisible, getAllCategories, listVisible } from '@/lib/posts';
 import { CAT_ICONS, PER_PAGE } from '@/lib/content';
 import { getCurrentTenant } from '@/lib/currentTenant';
+import { getUser } from '@/lib/auth';
+import { SuspendedBlogScreen } from '@/components/SuspendedBlogScreen';
 
 export async function CategoryPage({ slug, page = 1 }) {
   const { tenant } = await getCurrentTenant();
+
+  if (tenant?.status && tenant.status !== 'active') {
+    const user = await getUser().catch(() => null);
+    const isStaff = !!(user && (user.role === 'admin' || user.role === 'superadmin'));
+    if (!isStaff) {
+      return <SuspendedBlogScreen tenant={tenant} isStaff={isStaff} />;
+    }
+  }
+
   const cats = await getAllCategories(tenant?.id);
   const cat = cats.find((c) => c.slug === slug);
   if (!cat) notFound();
@@ -15,7 +26,7 @@ export async function CategoryPage({ slug, page = 1 }) {
   if (page > pages || page < 1) notFound();
   const posts = await listVisible({ limit: PER_PAGE, offset: (page - 1) * PER_PAGE, categorySlug: slug, tenantId: tenant?.id });
   const tenantSlug = tenant?.slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
   const homeHref = `/${tenantQuery}`;
 
   return (

@@ -12,10 +12,12 @@ export default function ScheduleManager({ user, tenant: initialTenant, initialCo
     category_slug: '',
     status: 'active',
     is_continuous: false,
+    cover_prompt: '',
   });
   const [scheduled, setScheduled] = useState(initialScheduled);
   const [busy, run] = useBusy();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [refiningPrompt, setRefiningPrompt] = useState(false);
 
   // Estado da Barrinha de Progresso em Tempo Real
   const [progress, setProgress] = useState(null);
@@ -39,6 +41,29 @@ export default function ScheduleManager({ user, tenant: initialTenant, initialCo
     toast('Configurações de agendamento salvas com sucesso!', 'ok');
     if (res.config) setConfig(res.config);
   });
+
+  const handleRefineCoverPrompt = async () => {
+    if (refiningPrompt) return;
+    setRefiningPrompt(true);
+    try {
+      const res = await api('/api/admin/training/refine/', {
+        method: 'POST',
+        data: {
+          fieldKey: 'cover_prompt',
+          fieldLabel: 'Prompt e Estilo Visual para Capas de Artigos',
+          currentValue: config.cover_prompt || 'Fotografia corporativa profissional e sofisticada com foco no contexto do negócio, iluminação natural, moderna e sem textos',
+        },
+      });
+      if (res.refined) {
+        setConfig((prev) => ({ ...prev, cover_prompt: res.refined }));
+        toast('Prompt de capas aprimorado com sucesso pela IA!', 'ok');
+      }
+    } catch (err) {
+      toast(err.message || 'Falha ao aprimorar prompt com IA', 'err');
+    } finally {
+      setRefiningPrompt(false);
+    }
+  };
 
   const handleSimulateEnterprise = async () => {
     try {
@@ -102,6 +127,7 @@ export default function ScheduleManager({ user, tenant: initialTenant, initialCo
           start_date: config.start_date,
           preferred_time: config.preferred_time,
           category_slug: config.category_slug || null,
+          cover_prompt: config.cover_prompt || null,
         },
       });
 
@@ -140,6 +166,7 @@ export default function ScheduleManager({ user, tenant: initialTenant, initialCo
             idea: item.idea,
             pubDate: item.pubDate,
             category_slug: config.category_slug || null,
+            cover_prompt: config.cover_prompt || null,
             index: stepNum,
             total: itemsToProcess.length,
           },
@@ -452,6 +479,149 @@ export default function ScheduleManager({ user, tenant: initialTenant, initialCo
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* CARD 3: PROMPT DE GERAÇÃO DAS CAPAS */}
+      <div className="a-card" style={{
+        padding: '1.5rem',
+        borderRadius: '14px',
+        background: 'linear-gradient(145deg, #101a36, #142145)',
+        border: '1px solid rgba(59, 130, 246, 0.3)',
+        marginBottom: '1.75rem',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.125rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#f8fafc' }}>
+              <span>🎨</span> Diretrizes & Prompt de Capas para Geração Automática
+            </h3>
+            <p className="a-sub" style={{ margin: '0.25rem 0 0', color: '#94a3b8', fontSize: '0.85rem' }}>
+              Cole aqui o prompt ou orientações de estilo para que as capas dos artigos gerados automaticamente fiquem sempre no contexto e estética desejados.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleRefineCoverPrompt}
+            disabled={refiningPrompt || busy === 'save'}
+            style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.3))',
+              border: '1px solid rgba(139, 92, 246, 0.5)',
+              color: '#c4b5fd',
+              borderRadius: '8px',
+              padding: '6px 14px',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              cursor: refiningPrompt ? 'not-allowed' : 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              transition: 'all 0.2s ease',
+            }}
+            title="Aprimorar suas diretrizes com Inteligência Artificial para gerar as melhores imagens"
+          >
+            {refiningPrompt ? <Spin /> : <Icon name="spark" size={15} />}
+            <span>{refiningPrompt ? 'Aprimorando...' : 'Aprimorar Prompt com IA'}</span>
+          </button>
+        </div>
+
+        <div style={{ position: 'relative', marginTop: '0.75rem' }}>
+          <textarea
+            rows={4}
+            className="a-input"
+            style={{
+              width: '100%',
+              lineHeight: '1.5',
+              padding: '0.75rem 0.85rem',
+              borderRadius: '8px',
+              fontSize: '0.875rem',
+              background: 'rgba(15, 23, 42, 0.6)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: '#f1f5f9',
+              fontFamily: 'inherit',
+              resize: 'vertical',
+            }}
+            value={config.cover_prompt || ''}
+            onChange={(e) => setConfig({ ...config, cover_prompt: e.target.value })}
+            placeholder="Ex: Fotografia profissional e sofisticada em alta resolução 8k, estilo editorial moderno corporativo, ambiente de inovação e negócios, iluminação suave natural, pessoas reais trabalhando em equipe com dashboards analíticos, paleta elegante em tons azul-marinho e grafite, sem textos na imagem..."
+          />
+        </div>
+
+        {/* CHIPS DE SUGESTÃO RÁPIDA */}
+        <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Sugestões rápidas de estilo:</span>
+          {[
+            {
+              label: '💼 Executivo & Negócios',
+              prompt: 'Fotografia executiva corporativa de alto padrão, profissionais em reuniões estratégicas e ambiente de escritório moderno, iluminação suave natural, atmosfera de liderança e crescimento, estética editorial, sem textos.',
+            },
+            {
+              label: '🚀 Tecnologia & Inovação',
+              prompt: 'Fotografia contemporânea de tecnologia e inovação, ambientes modernos com dados e interfaces digitais conceituais, iluminação sutil de estúdio, estética de alta tecnologia e crescimento, sem textos.',
+            },
+            {
+              label: '📊 Finanças & Gestão',
+              prompt: 'Ambiente financeiro sofisticado e contemporâneo, executivos analisando métricas e relatórios em salas corporativas de alto padrão, atmosfera sóbria e moderna, sem textos.',
+            },
+            {
+              label: '✨ Minimalista Editorial',
+              prompt: 'Fotografia editorial minimalista, paleta suave e neutra com espaços arejados, design contemporâneo sofisticado, foco na simplicidade elegante e arquitetura corporativa, sem textos.',
+            },
+          ].map((s) => (
+            <button
+              key={s.label}
+              type="button"
+              onClick={() => setConfig({ ...config, cover_prompt: s.prompt })}
+              style={{
+                fontSize: '0.75rem',
+                padding: '4px 10px',
+                borderRadius: '999px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: '#cbd5e1',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)';
+                e.currentTarget.style.color = '#93c5fd';
+                e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.color = '#cbd5e1';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+              }}
+            >
+              {s.label}
+            </button>
+          ))}
+          {config.cover_prompt && (
+            <button
+              type="button"
+              onClick={() => setConfig({ ...config, cover_prompt: '' })}
+              style={{
+                fontSize: '0.75rem',
+                padding: '4px 8px',
+                borderRadius: '999px',
+                background: 'none',
+                border: 'none',
+                color: '#ef4444',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+              }}
+            >
+              Limpar
+            </button>
+          )}
+        </div>
+
+        <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <span>💡</span>
+          <span>
+            Caso deixe em branco, a IA aplicará as diretrizes de capa configuradas no menu <em>Treinar a IA</em> ou selecionará os presets fotográficos temáticos oficiais da sua empresa.
+          </span>
         </div>
       </div>
 

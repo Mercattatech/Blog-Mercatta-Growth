@@ -28,6 +28,7 @@ export default function IdeasManager({
     category_slug: '',
     tenantId: userTenantId || (tenants[0]?.id ? String(tenants[0].id) : ''),
     publishImmediate: false,
+    cover_prompt: '',
   });
 
   const catName = (slug) => categories.find((c) => c.slug === slug)?.name || slug || 'Sem categoria';
@@ -292,6 +293,23 @@ export default function IdeasManager({
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="a-field">
+              <label htmlFor="inst-cover">🎨 Prompt de Contexto da Capa (opcional)</label>
+              <textarea
+                id="inst-cover"
+                rows={2}
+                className="a-input"
+                placeholder="Ex: Fotografia executiva contemporânea em ambiente de escritório inovador, iluminação suave, pessoas em reunião estratégica, tons azuis..."
+                value={instantForm.cover_prompt || ''}
+                onChange={(e) => setInstantForm({ ...instantForm, cover_prompt: e.target.value })}
+                disabled={generatingInstant}
+                style={{ resize: 'vertical', fontSize: '0.85rem' }}
+              />
+              <small className="muted" style={{ display: 'block', marginTop: 4 }}>
+                Personalize o estilo visual da capa para este artigo. Se em branco, usará o treinamento da marca.
+              </small>
             </div>
 
             <div className="a-field" style={{ marginTop: 8 }}>

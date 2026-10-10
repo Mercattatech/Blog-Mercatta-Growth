@@ -115,6 +115,7 @@ export function TenantsManager({ initialTenants = [] }) {
       whatsapp: '',
       ai_posts_limit_month: '30',
       has_whatsapp_flow: false,
+      status: 'active',
       admin_name: '',
       admin_email: '',
       admin_password: '',
@@ -130,6 +131,7 @@ export function TenantsManager({ initialTenants = [] }) {
       custom_domain: t.custom_domain || '',
       subdomain: t.subdomain || '',
       plan_name: t.plan_name || 'Pro',
+      status: t.status || 'active',
       monthly_price: String(t.monthly_price || 497),
       primary_color: t.primary_color || '#2563eb',
       accent_color: t.accent_color || '#1d4ed8',
@@ -424,7 +426,25 @@ export function TenantsManager({ initialTenants = [] }) {
 
                     {/* Domínio & DNS */}
                     <td style={{ padding: '1rem' }}>
-                      {hasCustomDomain ? (
+                      {t.slug === 'mercatta' ? (
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <span style={{ fontWeight: 700, color: '#60a5fa' }}>news.grupomercatta.com.br</span>
+                          </div>
+                          <span style={{
+                            display: 'inline-block',
+                            fontSize: '0.7rem',
+                            marginTop: '0.2rem',
+                            padding: '0.1rem 0.4rem',
+                            borderRadius: 4,
+                            background: 'rgba(59, 130, 246, 0.15)',
+                            color: '#60a5fa',
+                            fontWeight: 700,
+                          }}>
+                            ★ Domínio Principal
+                          </span>
+                        </div>
+                      ) : hasCustomDomain ? (
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                             <span style={{ fontWeight: 600, color: '#60a5fa' }}>{t.custom_domain}</span>
@@ -452,10 +472,12 @@ export function TenantsManager({ initialTenants = [] }) {
                         </div>
                       ) : (
                         <div>
-                          <span style={{ color: 'var(--muted)', fontSize: '0.8125rem' }}>
-                            {t.subdomain ? `${t.subdomain}.grupomercatta.com.br` : 'Sem domínio'}
+                          <span style={{ color: '#93c5fd', fontSize: '0.8125rem', fontWeight: 600 }}>
+                            {t.subdomain ? `${t.subdomain}.grupomercatta.com.br` : `${t.slug}.grupomercatta.com.br`}
                           </span>
-                          <span style={{ display: 'block', fontSize: '0.7rem', color: '#94a3b8' }}>Subdomínio provisório</span>
+                          <span style={{ display: 'block', fontSize: '0.7rem', color: '#94a3b8' }}>
+                            Domínio provisório ({`/?tenant=${t.slug}`})
+                          </span>
                         </div>
                       )}
                     </td>
@@ -528,7 +550,7 @@ export function TenantsManager({ initialTenants = [] }) {
                         </button>
 
                         <a
-                          href={`/?tenant=${t.slug}`}
+                          href={t.slug === 'mercatta' ? '/' : `/?tenant=${t.slug}`}
                           target="_blank"
                           rel="noopener"
                           className="a-btn ghost sm"
@@ -557,19 +579,17 @@ export function TenantsManager({ initialTenants = [] }) {
                           <Icon name="edit" size={15} /> Editar
                         </button>
 
-                        {!isMercatta && !isBraziw && (
-                          <button
-                            type="button"
-                            className="a-btn ghost sm"
-                            onClick={() => toggleStatus(t)}
-                            title={t.status === 'active' ? 'Suspender Blog por Falta de Pagamento' : 'Reativar Blog'}
-                            style={{ padding: '0.3rem 0.6rem', color: t.status === 'active' ? '#eab308' : '#10b981' }}
-                          >
-                            {t.status === 'active' ? 'Pausar' : 'Ativar'}
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          className="a-btn ghost sm"
+                          onClick={() => toggleStatus(t)}
+                          title={t.status === 'active' ? 'Pausar/Suspender Blog' : 'Reativar Blog'}
+                          style={{ padding: '0.3rem 0.6rem', color: t.status === 'active' ? '#eab308' : '#10b981' }}
+                        >
+                          {t.status === 'active' ? 'Pausar' : 'Ativar'}
+                        </button>
 
-                        {!isMercatta && !isBraziw && (
+                        {!isMercatta && (
                           <button
                             type="button"
                             className="a-btn ghost sm"
@@ -786,7 +806,7 @@ export function TenantsManager({ initialTenants = [] }) {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Plano Contratado
@@ -799,6 +819,20 @@ export function TenantsManager({ initialTenants = [] }) {
                     <option value="Starter">Starter (R$ 297/mês)</option>
                     <option value="Pro">Pro Growth (R$ 497/mês)</option>
                     <option value="Enterprise">Enterprise (R$ 997/mês)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.35rem' }}>
+                    Status do Blog
+                  </label>
+                  <select
+                    value={form.status || 'active'}
+                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                    style={{ width: '100%', padding: '0.65rem', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg)', color: 'inherit' }}
+                  >
+                    <option value="active">🟢 Ativo (No Ar)</option>
+                    <option value="suspended">⏸️ Pausado / Suspenso</option>
                   </select>
                 </div>
 
@@ -827,7 +861,7 @@ export function TenantsManager({ initialTenants = [] }) {
                   />
                 </div>
 
-                <div style={{ gridColumn: 'span 3', background: 'rgba(16, 185, 129, 0.08)', padding: '0.75rem 1rem', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.25)', marginTop: '0.25rem' }}>
+                <div style={{ gridColumn: '1 / -1', background: 'rgba(16, 185, 129, 0.08)', padding: '0.75rem 1rem', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.25)', marginTop: '0.25rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', fontWeight: 600, color: '#34d399' }}>
                     <input
                       type="checkbox"

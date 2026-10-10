@@ -12,6 +12,7 @@ const FIELDS = [
   ['style_rules', 'Regras de estilo e estrutura', 'Tamanho de parágrafos, uso de listas, exemplos, etc.', 4],
   ['cta', 'Chamada para ação (CTA)', 'Como encerrar os artigos e para onde levar o leitor.', 3],
   ['brand_facts', 'Fatos da marca', 'Informações verdadeiras sobre a empresa que a IA pode citar.', 3],
+  ['cover_prompt', 'Diretrizes & Prompt de Capas com IA', 'Descreva o estilo visual e diretrizes para geração das capas dos artigos (ex: fotos realistas de escritório corporativo moderno, pessoas reais, iluminação natural, sem ilustrações). A IA seguirá este prompt em todas as gerações automáticas.', 4],
   ['extra', 'Instruções extras (opcional)', 'Qualquer outra orientação para ideias e artigos.', 3],
 ];
 

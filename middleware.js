@@ -16,7 +16,17 @@ export function middleware(req) {
   }
 
   const requestHeaders = new Headers(req.headers);
-  requestHeaders.set('x-tenant-host', host);
+  // Suporte a URL temporária limpa /b/slug (ex: /b/braziw -> /?tenant=braziw)
+  if (url.pathname.startsWith('/b/')) {
+    const slug = url.pathname.replace(/^\/b\//, '').split('/')[0];
+    if (slug) {
+      const redirectUrl = new URL('/', req.url);
+      redirectUrl.searchParams.set('tenant', slug);
+      const res = NextResponse.redirect(redirectUrl);
+      res.cookies.set('mercatta_dev_tenant', slug, { path: '/', maxAge: 60 * 60 * 24 });
+      return res;
+    }
+  }
 
   // Suporte a parâmetro de tenant (?tenant=slug) e persistência de navegação
   const tenantParam = url.searchParams.get('tenant');

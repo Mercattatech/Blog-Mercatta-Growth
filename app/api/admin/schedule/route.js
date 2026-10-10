@@ -82,6 +82,7 @@ export async function POST(req) {
         pubDate: body.pubDate,
         categorySlug: body.category_slug || null,
         user,
+        cover_prompt: body.cover_prompt || null,
       });
       return Response.json({ ok: true, article, index: body.index, total: body.total });
     }
@@ -96,6 +97,7 @@ export async function POST(req) {
         preferredTime: body.preferred_time || '09:00',
         categorySlug: body.category_slug || null,
         user,
+        cover_prompt: body.cover_prompt || null,
       });
       return Response.json(result);
     }
@@ -119,6 +121,7 @@ export async function POST(req) {
       preferred_time: body.preferred_time || '09:00',
       category_slug: body.category_slug || null,
       is_continuous: !!body.is_continuous,
+      cover_prompt: body.cover_prompt || null,
     });
 
     return Response.json({ ok: true, config: saved });

@@ -57,7 +57,7 @@ export async function HomePage({ page = 1, tenant: passedTenant = null }) {
     : (theme.hero_subtitle && !theme.hero_subtitle.startsWith('#') ? theme.hero_subtitle : (tenant.site_description || 'Artigos, novidades e informações exclusivas para você.'));
   const heroBtnText = theme.hero_btn_text || 'Explorar artigos';
   const heroBtnSearchText = theme.hero_btn_search_text || 'Buscar no blog';
-  const tenantQuery = (tenant?.slug && tenant.slug !== 'braziw') ? `?tenant=${tenant.slug}` : '';
+  const tenantQuery = (tenant?.slug && tenant.slug !== 'mercatta') ? `?tenant=${tenant.slug}` : '';
 
   return (
     <Shell active="home" tenant={tenant}>

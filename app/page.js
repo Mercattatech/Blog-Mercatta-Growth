@@ -1,5 +1,6 @@
 import { HomePage } from '@/components/HomePage';
 import { MercattaHubLanding } from '@/components/MercattaHubLanding';
+import { SuspendedBlogScreen } from '@/components/SuspendedBlogScreen';
 import { getCurrentTenant } from '@/lib/currentTenant';
 import { listTenants } from '@/lib/tenant';
 import { getUser } from '@/lib/auth';
@@ -34,6 +35,15 @@ export default async function Page() {
     const tenants = await listTenants().catch(() => []);
     const user = await getUser().catch(() => null);
     return <MercattaHubLanding tenants={tenants} user={user} />;
+  }
+
+  // Verifica se o blog está desativado/pausado pelo administrador
+  if (tenant?.status && tenant.status !== 'active') {
+    const user = await getUser().catch(() => null);
+    const isStaff = !!(user && (user.role === 'admin' || user.role === 'superadmin'));
+    if (!isStaff) {
+      return <SuspendedBlogScreen tenant={tenant} isStaff={isStaff} />;
+    }
   }
 
   return <HomePage page={1} tenant={tenant} />;

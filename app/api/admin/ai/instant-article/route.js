@@ -12,7 +12,7 @@ export const POST = route(async ({ req, user }) => {
   }
 
   const body = await req.json().catch(() => ({}));
-  const { topic, category_slug, publishImmediate } = body;
+  const { topic, category_slug, publishImmediate, cover_prompt } = body;
 
   const isSuper = user.role === 'superadmin';
   let targetTenantId = (isSuper && body.tenantId) ? Number(body.tenantId) : user.tenant_id;
@@ -42,6 +42,7 @@ export const POST = route(async ({ req, user }) => {
         categorySlug: category,
         focusKeyword: article.focus_keyword || idea.focus_keyword,
         tenant,
+        customCoverPrompt: cover_prompt || undefined,
       });
     } catch (e) {
       console.warn('[instant-article] Não foi possível gerar capa automática:', e);

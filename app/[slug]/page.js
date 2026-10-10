@@ -6,6 +6,7 @@ import { MAIN_SITE, extractToc, fdate, isoDay, siteUrl, trunc } from '@/lib/cont
 import { getCurrentTenant } from '@/lib/currentTenant';
 import { getTenantById } from '@/lib/tenant';
 import { getUser } from '@/lib/auth';
+import { SuspendedBlogScreen } from '@/components/SuspendedBlogScreen';
 
 export const revalidate = 60;
 
@@ -60,6 +61,10 @@ export default async function Page({ params }) {
     if (postTenant) effectiveTenant = postTenant;
   }
 
+  if (effectiveTenant?.status && effectiveTenant.status !== 'active' && !isStaff) {
+    return <SuspendedBlogScreen tenant={effectiveTenant} isStaff={isStaff} />;
+  }
+
   const [related, adj] = await Promise.all([
     getRelated(post, 3, effectiveTenant?.id),
     getAdjacent(post, effectiveTenant?.id),
@@ -108,7 +113,7 @@ export default async function Page({ params }) {
   ];
 
   const tenantSlug = effectiveTenant?.slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
   const homeHref = `/${tenantQuery}`;
   const catHref = (cSlug) => `/categoria/${cSlug}/${tenantQuery}`;
 

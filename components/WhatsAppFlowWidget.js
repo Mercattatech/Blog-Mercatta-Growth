@@ -63,7 +63,7 @@ export default function WhatsAppFlowWidget({ tenant, flowConfig }) {
           window.open(out.whatsapp_url, '_blank', 'noopener,noreferrer');
         }
 
-        const tQuery = (tenant?.slug && tenant.slug !== 'braziw' && tenant.slug !== 'mercatta') ? `?tenant=${tenant.slug}` : '';
+        const tQuery = (tenant?.slug && tenant.slug !== 'mercatta') ? `?tenant=${tenant.slug}` : '';
         const targetRedirect = out.redirect_url ? `${out.redirect_url}${tQuery ? `${out.redirect_url.includes('?') ? '&' : '?'}${tQuery.slice(1)}` : ''}` : `/obrigado/${tQuery}`;
         window.location.href = targetRedirect;
       } catch (err) {
