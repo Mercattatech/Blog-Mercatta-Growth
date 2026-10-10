@@ -108,7 +108,7 @@ export default async function Page({ params }) {
   ];
 
   const tenantSlug = effectiveTenant?.slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw' && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
   const homeHref = `/${tenantQuery}`;
   const catHref = (cSlug) => `/categoria/${cSlug}/${tenantQuery}`;
 

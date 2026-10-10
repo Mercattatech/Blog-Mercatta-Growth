@@ -57,6 +57,7 @@ export async function HomePage({ page = 1, tenant: passedTenant = null }) {
     : (theme.hero_subtitle && !theme.hero_subtitle.startsWith('#') ? theme.hero_subtitle : (tenant.site_description || 'Artigos, novidades e informações exclusivas para você.'));
   const heroBtnText = theme.hero_btn_text || 'Explorar artigos';
   const heroBtnSearchText = theme.hero_btn_search_text || 'Buscar no blog';
+  const tenantQuery = (tenant?.slug && tenant.slug !== 'braziw') ? `?tenant=${tenant.slug}` : '';
 
   return (
     <Shell active="home" tenant={tenant}>
@@ -83,10 +84,10 @@ export async function HomePage({ page = 1, tenant: passedTenant = null }) {
                 {feature ? (
                   <>
                     <article className="feature reveal" style={{ '--d': '120ms' }}>
-                      <a className="feature-media fit" style={bgStyle(feature)} href={`/${feature.slug}/`} tabIndex={-1} aria-hidden="true"><Cover post={feature} small={false} eager tenant={tenant} /></a>
+                      <a className="feature-media fit" style={bgStyle(feature)} href={`/${feature.slug}/${tenantQuery}`} tabIndex={-1} aria-hidden="true"><Cover post={feature} small={false} eager tenant={tenant} /></a>
                       <div className="feature-body">
                         <span className="badge-new">Destaque</span><Pill cat={feature.cat} glass />
-                        <h2><a href={`/${feature.slug}/`}>{feature.title}</a></h2>
+                        <h2><a href={`/${feature.slug}/${tenantQuery}`}>{feature.title}</a></h2>
                         <p>{trunc(feature.excerpt, 140)}</p>
                         <div className="meta meta-light"><time dateTime={isoDay(feature.publish_at)}>{fdate(feature.publish_at)}</time><span className="dot" /><span>{feature.minutes} min de leitura</span></div>
                       </div>
@@ -94,10 +95,10 @@ export async function HomePage({ page = 1, tenant: passedTenant = null }) {
                     <div className="hero-minis">
                       {side2.map((p, i) => (
                         <article key={p.id} className="hero-mini reveal" style={{ '--d': `${(i + 1) * 120}ms` }}>
-                          <a className="hm-media fit" style={bgStyle(p)} href={`/${p.slug}/`} tabIndex={-1} aria-hidden="true"><Cover post={p} tenant={tenant} /></a>
+                          <a className="hm-media fit" style={bgStyle(p)} href={`/${p.slug}/${tenantQuery}`} tabIndex={-1} aria-hidden="true"><Cover post={p} tenant={tenant} /></a>
                           <div>
                             <Pill cat={p.cat} glass />
-                            <h3><a href={`/${p.slug}/`}>{trunc(p.title, 90)}</a></h3>
+                            <h3><a href={`/${p.slug}/${tenantQuery}`}>{trunc(p.title, 90)}</a></h3>
                             <div className="meta meta-light"><time dateTime={isoDay(p.publish_at)}>{fdate(p.publish_at, true)}</time><span className="dot" /><span>{p.minutes} min</span></div>
                           </div>
                         </article>
@@ -136,10 +137,9 @@ export async function HomePage({ page = 1, tenant: passedTenant = null }) {
           {cats.length > 0 && (
             <div className="container">
               <nav className="chips" aria-label="Categorias">
-                {cats.map((c) => {
-                  const tenantQuery = (tenant?.slug && tenant.slug !== 'braziw' && tenant.slug !== 'mercatta') ? `?tenant=${tenant.slug}` : '';
-                  return <a key={c.slug} className="chip" href={`/categoria/${c.slug}/${tenantQuery}`}>{CAT_ICONS[c.slug] || '✦'} {c.name} <b>{c.count}</b></a>;
-                })}
+                {cats.map((c) => (
+                  <a key={c.slug} className="chip" href={`/categoria/${c.slug}/${tenantQuery}`}>{CAT_ICONS[c.slug] || '✦'} {c.name} <b>{c.count}</b></a>
+                ))}
               </nav>
             </div>
           )}

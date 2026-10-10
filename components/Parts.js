@@ -74,13 +74,13 @@ export const bgStyle = (post) => {
 export function Pill({ cat, glass = false, tenant = null }) {
   if (!cat) return null;
   const tenantSlug = tenant?.slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw' && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
   return <a className={`pill pill-${cat.slug}${glass ? ' pill-glass' : ''}`} href={`/categoria/${cat.slug}/${tenantQuery}`}>{cat.name}</a>;
 }
 
 export function Card({ post, delay = 0, tenant = null }) {
   const tenantSlug = tenant?.slug || post?.tenant_slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw' && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
 
   return (
     <article className="card reveal" style={{ '--d': `${delay}ms`, ...(bgStyle(post) || {}) }}>
@@ -103,7 +103,7 @@ export function Card({ post, delay = 0, tenant = null }) {
 export function Pagination({ base, page, total, tenant = null }) {
   if (total <= 1) return null;
   const tenantSlug = tenant?.slug;
-  const q = (tenantSlug && tenantSlug !== 'braziw' && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
+  const q = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
   const href = (n) => (n === 1 ? `${base}${q}` : `${base}pagina/${n}/${q}`);
   const shown = [...new Set([1, total, page, page - 1, page + 1, page - 2, page + 2])].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
   const items = [];
@@ -137,9 +137,9 @@ export async function Sidebar({ excludeId = 0, tenantId = null, tenant = null })
     getTopTags(18, tenantId),
   ]).catch(() => [[], [], []]);
 
-  const isBraziw = (!tenantId || tenantId === 1) && (!tenant || tenant?.slug === 'braziw');
+  const isBraziw = tenant?.slug === 'braziw';
   const tenantSlug = tenant?.slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw' && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
 
   return (
     <aside className="sidebar" aria-label="Barra lateral">

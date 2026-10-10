@@ -203,7 +203,7 @@ export async function Shell({ active = '', tenant: passedTenant = null, children
 
   const faviconUrl = tenant.favicon_url || tenant.logo_url || (tenant.slug === 'braziw' ? '/img/logo.png' : null);
 
-  const tenantQuery = (tenant?.slug && tenant.slug !== 'braziw' && tenant.slug !== 'mercatta') ? `?tenant=${tenant.slug}` : '';
+  const tenantQuery = (tenant?.slug && tenant.slug !== 'braziw') ? `?tenant=${tenant.slug}` : '';
   const homeHref = `/${tenantQuery}`;
   const catHref = (cSlug) => `/categoria/${cSlug}/${tenantQuery}`;
   const searchHref = `/busca/${tenantQuery}`;

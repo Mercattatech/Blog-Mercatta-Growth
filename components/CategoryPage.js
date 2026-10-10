@@ -15,7 +15,7 @@ export async function CategoryPage({ slug, page = 1 }) {
   if (page > pages || page < 1) notFound();
   const posts = await listVisible({ limit: PER_PAGE, offset: (page - 1) * PER_PAGE, categorySlug: slug, tenantId: tenant?.id });
   const tenantSlug = tenant?.slug;
-  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw' && tenantSlug !== 'mercatta') ? `?tenant=${tenantSlug}` : '';
+  const tenantQuery = (tenantSlug && tenantSlug !== 'braziw') ? `?tenant=${tenantSlug}` : '';
   const homeHref = `/${tenantQuery}`;
 
   return (
