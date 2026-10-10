@@ -105,7 +105,9 @@ export default function AdminShell({ user, pending = 0, children }) {
 
           <div className="adm-nav-label">Conta</div>
           <Link href="/admin/profile/" className={`adm-link${path.startsWith('/admin/profile') ? ' is-active' : ''}`}><Icon name="user" />Meu perfil</Link>
-          <a className="adm-link" href="/" target="_blank" rel="noopener"><Icon name="globe" />Ver o blog</a>
+          <a className="adm-link" href={user.tenant?.slug && user.tenant.slug !== 'mercatta' ? `/?tenant=${user.tenant.slug}` : '/'} target="_blank" rel="noopener">
+            <Icon name="globe" />Ver o blog
+          </a>
         </nav>
         <div className="adm-side-foot">
           <div className="adm-user">
