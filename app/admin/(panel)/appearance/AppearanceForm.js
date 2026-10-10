@@ -357,6 +357,744 @@ function ColorField({ label, hint, value, onChange }) {
   );
 }
 
+function LiveSectionPreview({ tab, theme, generalForm, brandName }) {
+  if (tab === 'buttons') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>🔘</span> Preview em Tempo Real: Botões e Ações Interativas (CTAs)
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', display: 'block', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Botões de Ação Principal (Banner Superior / Hero):
+            </span>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+              <button
+                type="button"
+                style={{
+                  background: theme.btn_primary_bg,
+                  color: theme.btn_primary_text,
+                  border: 'none',
+                  borderRadius: 10,
+                  padding: '12px 24px',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  boxShadow: `0 6px 20px ${theme.btn_primary_bg}66`,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <span>{theme.hero_btn_text || 'Explorar artigos'}</span>
+                <span>→</span>
+              </button>
+
+              <button
+                type="button"
+                style={{
+                  background: theme.btn_secondary_bg,
+                  color: theme.btn_secondary_text,
+                  border: `1px solid ${theme.btn_secondary_border}`,
+                  borderRadius: 10,
+                  padding: '12px 24px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <span>🔍</span>
+                <span>{theme.hero_btn_search_text || 'Buscar no blog'}</span>
+              </button>
+            </div>
+          </div>
+
+          <div style={{ borderTop: '1px dashed rgba(255,255,255,0.08)', paddingTop: 14 }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8', display: 'block', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Botão do Topo & Pílulas de Ação:
+            </span>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+              <button
+                type="button"
+                style={{
+                  background: theme.btn_header_bg,
+                  color: theme.btn_header_text,
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '8px 20px',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                }}
+              >
+                {theme.header_contact_text || 'Fale Conosco'}
+              </button>
+
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                background: theme.card_pill_bg,
+                color: theme.card_pill_text,
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                padding: '5px 12px',
+                borderRadius: 6,
+              }}>
+                ✦ Notícias (Tag no Card)
+              </span>
+
+              <span style={{
+                display: 'inline-block',
+                background: theme.badge_bg,
+                color: theme.badge_text,
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                padding: '4px 10px',
+                borderRadius: 4,
+              }}>
+                DESTAQUE
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'mini') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>📱</span> Preview em Tempo Real: Mini Cards no Hero
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{
+          background: theme.hero_bg,
+          borderRadius: 14,
+          padding: '24px',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}>
+          <div style={{ position: 'absolute', width: 160, height: 160, borderRadius: '50%', background: theme.hero_blob_1, filter: 'blur(35px)', opacity: 0.5, top: -20, left: -20 }} />
+          <div style={{ position: 'absolute', width: 160, height: 160, borderRadius: '50%', background: theme.hero_blob_2, filter: 'blur(35px)', opacity: 0.5, bottom: -20, right: 30 }} />
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, position: 'relative', zIndex: 1 }}>
+            <div style={{
+              background: theme.hero_mini_bg,
+              border: `1px solid ${theme.hero_mini_border}`,
+              borderRadius: 14,
+              padding: '16px',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 4px 18px rgba(0,0,0,0.25)',
+            }}>
+              <div style={{
+                height: 72,
+                borderRadius: 8,
+                background: `linear-gradient(135deg, ${theme.primary_color}, ${theme.accent_color})`,
+                marginBottom: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.03em',
+              }}>
+                MINI CARD 1
+              </div>
+              <strong style={{ display: 'block', fontSize: '0.875rem', color: theme.hero_mini_title, lineHeight: 1.35, marginBottom: 6 }}>
+                Apoio a Crianças Carentes: Impacto Social Real no Brasil
+              </strong>
+              <small style={{ fontSize: '0.75rem', color: theme.hero_mini_meta }}>
+                08 out 2026 • 4 min de leitura
+              </small>
+            </div>
+
+            <div style={{
+              background: theme.hero_mini_bg,
+              border: `1px solid ${theme.hero_mini_border}`,
+              borderRadius: 14,
+              padding: '16px',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 4px 18px rgba(0,0,0,0.25)',
+            }}>
+              <div style={{
+                height: 72,
+                borderRadius: 8,
+                background: `linear-gradient(135deg, ${theme.accent_color}, ${theme.primary_color})`,
+                marginBottom: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.03em',
+              }}>
+                MINI CARD 2
+              </div>
+              <strong style={{ display: 'block', fontSize: '0.875rem', color: theme.hero_mini_title, lineHeight: 1.35, marginBottom: 6 }}>
+                Doações Corporativas: Guia para Empresas Solidárias
+              </strong>
+              <small style={{ fontSize: '0.75rem', color: theme.hero_mini_meta }}>
+                Novidades • 3 min de leitura
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'feature') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>🏆</span> Preview em Tempo Real: Card de Destaque Principal
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{ maxWidth: 540, margin: '0 auto' }}>
+          <div style={{
+            background: theme.feature_card_bg,
+            borderRadius: 18,
+            overflow: 'hidden',
+            boxShadow: '0 14px 34px rgba(0,0,0,0.35)',
+            border: `1px solid ${theme.feature_card_border}`,
+          }}>
+            <div style={{
+              height: 150,
+              background: `linear-gradient(135deg, ${theme.feature_cover_1}, ${theme.feature_cover_2})`,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              color: '#fff',
+              textAlign: 'center',
+              padding: 16,
+            }}>
+              {generalForm.logo_url ? (
+                <img
+                  src={generalForm.logo_url}
+                  alt=""
+                  style={{ maxHeight: 38, maxWidth: 120, background: '#fff', padding: '4px 10px', borderRadius: 6, objectFit: 'contain' }}
+                />
+              ) : (
+                <span style={{ background: '#fff', color: '#0f172a', padding: '3px 10px', borderRadius: 4, fontSize: 11, fontWeight: 800 }}>
+                  {brandName.slice(0, 14)}
+                </span>
+              )}
+              <strong style={{ fontSize: 13, maxWidth: '90%' }}>Voluntariado Estratégico: Guia para Líderes</strong>
+            </div>
+
+            <div style={{ padding: '18px 22px' }}>
+              <span style={{
+                display: 'inline-block',
+                background: theme.badge_bg,
+                color: theme.badge_text,
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                padding: '3px 8px',
+                borderRadius: 4,
+                marginBottom: 10,
+              }}>
+                DESTAQUE
+              </span>
+
+              <h3 style={{
+                fontSize: '1.15rem',
+                fontWeight: 700,
+                color: theme.feature_title,
+                margin: '0 0 8px 0',
+                lineHeight: 1.3,
+              }}>
+                Voluntariado Estratégico: Guia para Líderes de Alto Impacto
+              </h3>
+
+              <p style={{
+                fontSize: '0.85rem',
+                color: theme.feature_text,
+                margin: '0 0 12px 0',
+                lineHeight: 1.45,
+              }}>
+                Aprenda a estruturar programas de voluntariado estratégico em sua empresa. Conecte equipes a causas sociais e gere impacto real no Brasil.
+              </p>
+
+              <small style={{ fontSize: '0.75rem', color: theme.feature_meta }}>
+                8 de outubro de 2026 • 3 min de leitura
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'chips') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>🏷️</span> Preview em Tempo Real: Barra de Categorias (Chips)
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{
+          background: theme.chips_bar_bg,
+          border: `1px solid ${theme.chips_bar_border}`,
+          borderRadius: 16,
+          padding: '14px 20px',
+          display: 'flex',
+          gap: 10,
+          boxShadow: '0 6px 20px rgba(0,0,0,0.06)',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+        }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: theme.chip_text, marginRight: 6 }}>Categorias:</span>
+          {['Notícias', 'Novidades', 'Lançamento', 'Destaques'].map((c) => (
+            <span
+              key={c}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '6px 14px',
+                borderRadius: 999,
+                background: theme.chip_bg,
+                color: theme.chip_text,
+                fontSize: '0.8rem',
+                fontWeight: 600,
+              }}
+            >
+              ✦ {c} <b style={{ background: theme.chip_count_bg, color: theme.chip_count_text, fontSize: 11, padding: '2px 7px', borderRadius: 99 }}>1</b>
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'cards') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>📰</span> Preview em Tempo Real: Grade de Artigos (Feed Principal)
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0, color: theme.section_title_color }}>
+            Últimos artigos
+          </h3>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+          <div style={{
+            background: theme.card_bg,
+            border: `1px solid ${theme.card_border}`,
+            borderRadius: 14,
+            overflow: 'hidden',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ height: 90, background: `linear-gradient(135deg, ${theme.primary_color}, ${theme.accent_color})` }} />
+            <div style={{ padding: 14 }}>
+              <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: theme.card_pill_bg, color: theme.card_pill_text, marginBottom: 8 }}>
+                Notícias
+              </span>
+              <strong style={{ display: 'block', fontSize: '0.95rem', color: theme.card_title, marginBottom: 6 }}>
+                Transformando Realidades Através da Educação
+              </strong>
+              <p style={{ fontSize: '0.8rem', color: theme.card_text, margin: '0 0 10px 0', lineHeight: 1.45 }}>
+                Conheça as iniciativas e metodologias que estão mudando o cenário social no Brasil.
+              </p>
+              <small style={{ fontSize: '0.72rem', color: theme.card_meta }}>08 out 2026 • 5 min de leitura</small>
+            </div>
+          </div>
+
+          <div style={{
+            background: theme.card_bg,
+            border: `1px solid ${theme.card_border}`,
+            borderRadius: 14,
+            overflow: 'hidden',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ height: 90, background: `linear-gradient(135deg, ${theme.accent_color}, ${theme.hero_blob_1})` }} />
+            <div style={{ padding: 14 }}>
+              <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: theme.card_pill_bg, color: theme.card_pill_text, marginBottom: 8 }}>
+                Destaques
+              </span>
+              <strong style={{ display: 'block', fontSize: '0.95rem', color: theme.card_title, marginBottom: 6 }}>
+                Como Empresas Podem Praticar ESG com Ações Reais
+              </strong>
+              <p style={{ fontSize: '0.8rem', color: theme.card_text, margin: '0 0 10px 0', lineHeight: 1.45 }}>
+                Guia prático para pequenas e médias empresas gerarem impacto mensurável e sustentabilidade.
+              </p>
+              <small style={{ fontSize: '0.72rem', color: theme.card_meta }}>08 out 2026 • 4 min de leitura</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'header') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>📌</span> Preview em Tempo Real: Topo & Cabeçalho (Navbar)
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{
+          background: theme.header_bg,
+          color: theme.header_text,
+          border: `1px solid ${theme.header_border}`,
+          borderRadius: 14,
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {generalForm.logo_url ? (
+              <img
+                src={generalForm.logo_url}
+                alt={brandName}
+                style={{ maxHeight: 38, maxWidth: 120, objectFit: 'contain' }}
+              />
+            ) : (
+              <div style={{
+                padding: '6px 14px',
+                borderRadius: 8,
+                background: theme.primary_color,
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: 13,
+              }}>
+                {brandName.slice(0, 14).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <strong style={{ display: 'block', fontSize: '0.95rem', color: theme.header_text, lineHeight: 1.2 }}>
+                {theme.header_title_text !== undefined && theme.header_title_text !== '' ? theme.header_title_text : (generalForm.site_title || brandName)}
+              </strong>
+              <small style={{ fontSize: '0.75rem', color: theme.header_subtext }}>
+                {theme.header_tagline_text !== undefined && theme.header_tagline_text !== '' ? theme.header_tagline_text : (generalForm.site_tagline || 'Aqui o amor acontece')}
+              </small>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: theme.header_nav_active }}>Início</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: theme.header_nav_color }}>Notícias</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: theme.header_nav_color }}>Novidades</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: theme.header_icon_color }}>
+              <Icon name="globe" size={16} />
+              <Icon name="moon" size={16} />
+            </div>
+            <button
+              type="button"
+              style={{
+                background: theme.btn_header_bg,
+                color: theme.btn_header_text,
+                border: 'none',
+                borderRadius: 8,
+                padding: '8px 18px',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+              }}
+            >
+              {theme.header_contact_text || 'Fale Conosco'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'hero') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>🌟</span> Preview em Tempo Real: Banner Principal (Hero)
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{
+          position: 'relative',
+          overflow: 'hidden',
+          background: theme.hero_bg,
+          padding: '28px 24px',
+          borderRadius: 14,
+          border: '1px solid rgba(255,255,255,0.12)',
+        }}>
+          <div style={{ position: 'absolute', width: 220, height: 220, borderRadius: '50%', background: theme.hero_blob_1, filter: 'blur(45px)', opacity: 0.5, top: -40, left: -20, zIndex: 0 }} />
+          <div style={{ position: 'absolute', width: 200, height: 200, borderRadius: '50%', background: theme.hero_blob_2, filter: 'blur(40px)', opacity: 0.45, right: '10%', top: '5%', zIndex: 0 }} />
+          <div style={{ position: 'absolute', width: 180, height: 180, borderRadius: '50%', background: theme.hero_blob_3, filter: 'blur(40px)', opacity: 0.35, bottom: -30, left: '35%', zIndex: 0 }} />
+
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: 640 }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '4px 12px',
+              borderRadius: 999,
+              background: theme.hero_tag_bg,
+              color: theme.hero_tag_text,
+              border: `1px solid ${theme.hero_tag_border}`,
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+              marginBottom: 12,
+            }}>
+              {theme.hero_eyebrow_text || `✦ ${brandName.toUpperCase()}`}
+            </span>
+
+            <h2 style={{
+              fontSize: '1.45rem',
+              fontWeight: 800,
+              lineHeight: 1.25,
+              margin: '0 0 10px 0',
+              color: theme.hero_title,
+            }}>
+              {theme.hero_title_text || 'Juntos, transformamos vidas e construímos um futuro melhor'}
+              {theme.hero_highlight_text ? (
+                <>
+                  {' '}—{' '}
+                  <span style={{
+                    background: `linear-gradient(100deg, ${theme.hero_highlight}, ${theme.hero_highlight_2 || '#ffe58a'} 50%, ${theme.hero_highlight})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}>
+                    {theme.hero_highlight_text}
+                  </span>
+                </>
+              ) : null}
+            </h2>
+
+            <p style={{
+              fontSize: '0.85rem',
+              color: theme.hero_subtitle,
+              margin: '0 0 16px 0',
+              lineHeight: 1.45,
+            }}>
+              {theme.hero_subtitle_text || generalForm.site_description || 'Blog inteligente da ' + brandName}
+            </p>
+
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+              <button
+                type="button"
+                style={{
+                  background: theme.btn_primary_bg,
+                  color: theme.btn_primary_text,
+                  border: 'none',
+                  borderRadius: 9,
+                  padding: '8px 18px',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  boxShadow: `0 6px 18px ${theme.btn_primary_bg}66`,
+                  cursor: 'pointer',
+                }}
+              >
+                {theme.hero_btn_text || 'Explorar artigos'}
+              </button>
+              <button
+                type="button"
+                style={{
+                  background: theme.btn_secondary_bg,
+                  color: theme.btn_secondary_text,
+                  border: `1px solid ${theme.btn_secondary_border}`,
+                  borderRadius: 9,
+                  padding: '8px 18px',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                }}
+              >
+                {theme.hero_btn_search_text || 'Buscar no blog'}
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', gap: 20 }}>
+              <div>
+                <strong style={{ fontSize: '1.15rem', color: theme.hero_stats_number, display: 'block', lineHeight: 1 }}>3</strong>
+                <span style={{ fontSize: '0.7rem', color: theme.hero_stats_label }}>artigos</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: '1.15rem', color: theme.hero_stats_number, display: 'block', lineHeight: 1 }}>4</strong>
+                <span style={{ fontSize: '0.7rem', color: theme.hero_stats_label }}>categorias</span>
+              </div>
+              <div>
+                <strong style={{ fontSize: '1.15rem', color: theme.hero_stats_number, display: 'block', lineHeight: 1 }}>2026</strong>
+                <span style={{ fontSize: '0.7rem', color: theme.hero_stats_label }}>no ar desde</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'global') {
+    return (
+      <div style={{
+        background: 'linear-gradient(145deg, #0b1120, #0f172a)',
+        border: '1px solid rgba(59, 130, 246, 0.4)',
+        borderRadius: 16,
+        padding: '20px 24px',
+        marginBottom: 20,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+          <strong style={{ fontSize: '0.95rem', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '1.25rem' }}>🌐</span> Preview em Tempo Real: Fundo Geral da Página & Rodapé
+          </strong>
+          <span style={{ fontSize: '0.75rem', color: '#93c5fd', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', padding: '3px 10px', borderRadius: 999 }}>
+            ⚡ Atualiza ao vivo ao alterar as cores abaixo
+          </span>
+        </div>
+
+        <div style={{
+          background: theme.body_bg,
+          color: theme.body_text,
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 14,
+          padding: '20px',
+          marginBottom: 16,
+        }}>
+          <span style={{ fontSize: '0.75rem', color: theme.body_text, opacity: 0.7, display: 'block', marginBottom: 4 }}>
+            Fundo do Site & Tipografia:
+          </span>
+          <h4 style={{ margin: '0 0 6px 0', color: theme.body_text, fontSize: '1.1rem' }}>
+            Texto de Exemplo no Corpo do Blog
+          </h4>
+          <p style={{ margin: 0, fontSize: '0.85rem', color: theme.body_text, opacity: 0.85, lineHeight: 1.5 }}>
+            Simulação de como os artigos e o conteúdo geral serão exibidos com a cor de fundo e contraste selecionados.
+          </p>
+        </div>
+
+        <div style={{
+          background: theme.footer_bg,
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: 14,
+          padding: '20px 24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 14,
+        }}>
+          <div>
+            <strong style={{ fontSize: '1rem', color: theme.footer_title, display: 'block', marginBottom: 4 }}>
+              {generalForm.site_title || brandName}
+            </strong>
+            <p style={{ fontSize: '0.8rem', color: theme.footer_text, margin: 0 }}>
+              {generalForm.site_description || 'Portal corporativo com autoridade e alta performance.'}
+            </p>
+          </div>
+          <div style={{ fontSize: '0.75rem', color: theme.footer_text, textAlign: 'right' }}>
+            © {new Date().getFullYear()} {brandName}. Todos os direitos reservados.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = false }) {
   const router = useRouter();
 
@@ -713,14 +1451,15 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
               justifyContent: 'space-between',
               cursor: 'pointer',
               position: 'relative',
-              outline: hoveredSection === 'header' || activeTab === 'header' ? '2px dashed #3b82f6' : 'none',
+              outline: hoveredSection === 'header' || activeTab === 'header' ? '3px solid #3b82f6' : 'none',
+              boxShadow: activeTab === 'header' ? '0 0 0 4px rgba(59, 130, 246, 0.25)' : 'none',
               outlineOffset: -2,
               transition: 'background 0.25s ease'
             }}
           >
-            {hoveredSection === 'header' && (
-              <span style={{ position: 'absolute', top: 4, right: 12, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>
-                ✏️ Editar Topo & Cabeçalho
+            {(hoveredSection === 'header' || activeTab === 'header') && (
+              <span style={{ position: 'absolute', top: 4, right: 12, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                {activeTab === 'header' ? '🎯 Editando: Topo & Cabeçalho' : '✏️ Editar Topo & Cabeçalho'}
               </span>
             )}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -795,10 +1534,16 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
               alignItems: 'center',
               isolation: 'isolate',
               cursor: 'pointer',
-              outline: hoveredSection === 'hero' || activeTab === 'hero' ? '2px dashed #3b82f6' : 'none',
+              outline: hoveredSection === 'hero' || activeTab === 'hero' ? '3px solid #3b82f6' : 'none',
+              boxShadow: activeTab === 'hero' ? '0 0 0 4px rgba(59, 130, 246, 0.25)' : 'none',
               outlineOffset: -2,
             }}
           >
+            {(hoveredSection === 'hero' || activeTab === 'hero') && (
+              <span style={{ position: 'absolute', top: 8, left: 12, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                {activeTab === 'hero' ? '🎯 Editando: Banner Principal (Hero)' : '✏️ Editar Hero'}
+              </span>
+            )}
             {/* LUZES / BLOBS DE FUNDO */}
             <div style={{
               position: 'absolute',
@@ -892,10 +1637,32 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 {theme.hero_subtitle_text || generalForm.site_description || 'Blog inteligente da ' + brandName}
               </p>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
+              {/* BOTÕES DE AÇÃO COM ATIVAÇÃO DIRETA DA ABA 3 */}
+              <div
+                onClick={(e) => { e.stopPropagation(); setActiveTab('buttons'); }}
+                title="Clique para editar as cores dos botões de ação"
+                style={{
+                  display: 'inline-flex',
+                  gap: 10,
+                  flexWrap: 'wrap',
+                  marginBottom: 20,
+                  padding: activeTab === 'buttons' ? '6px' : '0',
+                  borderRadius: 12,
+                  outline: activeTab === 'buttons' ? '3px solid #f59e0b' : 'none',
+                  boxShadow: activeTab === 'buttons' ? '0 0 0 4px rgba(245, 158, 11, 0.25)' : 'none',
+                  background: activeTab === 'buttons' ? 'rgba(245, 158, 11, 0.12)' : 'transparent',
+                  position: 'relative',
+                  cursor: 'pointer'
+                }}
+              >
+                {activeTab === 'buttons' && (
+                  <span style={{ position: 'absolute', top: -14, left: 8, fontSize: 10, background: '#f59e0b', color: '#000', padding: '2px 8px', borderRadius: 4, fontWeight: 800, zIndex: 10, boxShadow: '0 2px 6px rgba(0,0,0,0.3)' }}>
+                    🎯 Editando: Botões de Ação (CTAs)
+                  </span>
+                )}
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); setActiveTab('hero'); }}
+                  onClick={(e) => { e.stopPropagation(); setActiveTab('buttons'); }}
                   style={{
                     background: theme.btn_primary_bg,
                     color: theme.btn_primary_text,
@@ -912,7 +1679,7 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); setActiveTab('hero'); }}
+                  onClick={(e) => { e.stopPropagation(); setActiveTab('buttons'); }}
                   style={{
                     background: theme.btn_secondary_bg,
                     color: theme.btn_secondary_text,
@@ -955,11 +1722,19 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                   background: theme.feature_card_bg,
                   borderRadius: 16,
                   overflow: 'hidden',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.3)',
+                  boxShadow: activeTab === 'feature' ? '0 0 0 4px rgba(59, 130, 246, 0.35), 0 12px 30px rgba(0,0,0,0.3)' : '0 12px 30px rgba(0,0,0,0.3)',
                   border: `1px solid ${theme.feature_card_border}`,
-                  outline: activeTab === 'feature' ? '2px dashed #3b82f6' : 'none',
+                  outline: activeTab === 'feature' ? '3px solid #3b82f6' : 'none',
+                  outlineOffset: 2,
+                  position: 'relative',
+                  cursor: 'pointer'
                 }}
               >
+                {activeTab === 'feature' && (
+                  <span style={{ position: 'absolute', top: 8, right: 8, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 6px rgba(0,0,0,0.3)' }}>
+                    🎯 Editando: Card de Destaque
+                  </span>
+                )}
                 <div style={{
                   height: 120,
                   background: `linear-gradient(135deg, ${theme.feature_cover_1}, ${theme.feature_cover_2})`,
@@ -1034,9 +1809,21 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
                   gap: 10,
-                  outline: activeTab === 'mini' ? '2px dashed #3b82f6' : 'none',
+                  outline: activeTab === 'mini' ? '3px solid #3b82f6' : 'none',
+                  boxShadow: activeTab === 'mini' ? '0 0 0 4px rgba(59, 130, 246, 0.25)' : 'none',
+                  outlineOffset: 3,
+                  position: 'relative',
+                  padding: activeTab === 'mini' ? '4px' : '0',
+                  borderRadius: 14,
+                  background: activeTab === 'mini' ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
+                  cursor: 'pointer'
                 }}
               >
+                {activeTab === 'mini' && (
+                  <span style={{ position: 'absolute', top: -14, right: 8, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 6px rgba(0,0,0,0.3)' }}>
+                    🎯 Editando: Mini Cards no Hero
+                  </span>
+                )}
                 <div style={{
                   background: theme.hero_mini_bg,
                   border: `1px solid ${theme.hero_mini_border}`,
@@ -1073,9 +1860,17 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
             style={{
               padding: '12px 24px',
               cursor: 'pointer',
-              outline: activeTab === 'chips' ? '2px dashed #3b82f6' : 'none',
+              outline: activeTab === 'chips' ? '3px solid #3b82f6' : 'none',
+              boxShadow: activeTab === 'chips' ? '0 0 0 4px rgba(59, 130, 246, 0.25)' : 'none',
+              outlineOffset: -2,
+              position: 'relative',
             }}
           >
+            {activeTab === 'chips' && (
+              <span style={{ position: 'absolute', top: 4, right: 28, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
+                🎯 Editando: Barra de Categorias
+              </span>
+            )}
             <div style={{
               background: theme.chips_bar_bg,
               border: `1px solid ${theme.chips_bar_border}`,
@@ -1116,9 +1911,17 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
             style={{
               padding: '16px 24px 28px',
               cursor: 'pointer',
-              outline: activeTab === 'cards' ? '2px dashed #3b82f6' : 'none',
+              outline: activeTab === 'cards' ? '3px solid #3b82f6' : 'none',
+              boxShadow: activeTab === 'cards' ? '0 0 0 4px rgba(59, 130, 246, 0.25)' : 'none',
+              outlineOffset: -2,
+              position: 'relative',
             }}
           >
+            {activeTab === 'cards' && (
+              <span style={{ position: 'absolute', top: 8, right: 28, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
+                🎯 Editando: Grade de Artigos (Feed)
+              </span>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '2px solid rgba(0,0,0,0.06)', paddingBottom: 8 }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, color: theme.section_title_color }}>
                 Últimos artigos
@@ -1170,6 +1973,38 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                   <small style={{ fontSize: '0.7rem', color: theme.card_meta }}>08 out 2026 • 4 min de leitura</small>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* 5. RODAPÉ & FUNDO GERAL */}
+          <div
+            onClick={() => setActiveTab('global')}
+            title="Clique para editar as cores do Rodapé e Fundo Geral"
+            style={{
+              background: theme.footer_bg,
+              borderTop: `1px solid ${theme.footer_border}`,
+              padding: '16px 24px',
+              cursor: 'pointer',
+              outline: activeTab === 'global' ? '3px solid #3b82f6' : 'none',
+              boxShadow: activeTab === 'global' ? '0 0 0 4px rgba(59, 130, 246, 0.25)' : 'none',
+              outlineOffset: -2,
+              position: 'relative',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            {activeTab === 'global' && (
+              <span style={{ position: 'absolute', top: 6, right: 24, fontSize: 10, background: '#3b82f6', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 700, zIndex: 10, boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
+                🎯 Editando: Fundo Geral & Rodapé
+              </span>
+            )}
+            <div>
+              <strong style={{ fontSize: '0.85rem', color: theme.footer_heading, display: 'block' }}>{brandName}</strong>
+              <small style={{ fontSize: '0.72rem', color: theme.footer_text }}>© {new Date().getFullYear()} {brandName}. Todos os direitos reservados.</small>
+            </div>
+            <div style={{ fontSize: '0.72rem', color: theme.footer_text }}>
+              Fundo da página: <span style={{ fontFamily: 'monospace', padding: '2px 6px', background: 'rgba(255,255,255,0.06)', borderRadius: 4, border: '1px solid rgba(255,255,255,0.1)' }}>{theme.page_bg}</span>
             </div>
           </div>
         </div>
@@ -1304,6 +2139,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 Edite aqui todos os textos do banner principal (título, destaque, subtítulo e botões) e personalize suas cores separadamente.
               </p>
             </div>
+
+            <LiveSectionPreview tab="hero" theme={theme} generalForm={generalForm} brandName={brandName} />
 
             {/* BLOCO DE TEXTOS DO HERO */}
             <div style={{
@@ -1508,6 +2345,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
               </p>
             </div>
 
+            <LiveSectionPreview tab="header" theme={theme} generalForm={generalForm} brandName={brandName} />
+
             {/* BLOCO DE TEXTOS DO HEADER */}
             <div style={{
               background: 'var(--surface-2)',
@@ -1646,6 +2485,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
               </p>
             </div>
 
+            <LiveSectionPreview tab="buttons" theme={theme} generalForm={generalForm} brandName={brandName} />
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
               <ColorField
                 label="Fundo do Botão Primário"
@@ -1698,6 +2539,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 O artigo principal em destaque na parte direita do banner superior.
               </p>
             </div>
+
+            <LiveSectionPreview tab="feature" theme={theme} generalForm={generalForm} brandName={brandName} />
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
               <ColorField
@@ -1776,6 +2619,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
               </p>
             </div>
 
+            <LiveSectionPreview tab="mini" theme={theme} generalForm={generalForm} brandName={brandName} />
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
               <ColorField
                 label="Fundo dos Mini Cards"
@@ -1822,6 +2667,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 A barra flutuante com as categorias do blog logo após o banner principal.
               </p>
             </div>
+
+            <LiveSectionPreview tab="chips" theme={theme} generalForm={generalForm} brandName={brandName} />
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
               <ColorField
@@ -1881,6 +2728,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 Configuração visual de todos os cards de artigos regulares da página inicial e categorias.
               </p>
             </div>
+
+            <LiveSectionPreview tab="cards" theme={theme} generalForm={generalForm} brandName={brandName} />
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
               <ColorField
@@ -1952,6 +2801,8 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                 Gerencie o logotipo oficial cadastrado, textos do site e as cores do rodapé.
               </p>
             </div>
+
+            <LiveSectionPreview tab="global" theme={theme} generalForm={generalForm} brandName={brandName} />
 
             {/* Upload de Logotipo */}
             <div style={{
