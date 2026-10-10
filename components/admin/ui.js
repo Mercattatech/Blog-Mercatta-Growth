@@ -24,6 +24,8 @@ export function toast(message, type = 'ok') {
   el.className = `a-toast ${type}`; el.textContent = message; box.appendChild(el);
   setTimeout(() => { el.style.transition = 'opacity .3s, transform .3s'; el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; setTimeout(() => el.remove(), 320); }, type === 'err' ? 6000 : 3500);
 }
+toast.ok = (msg) => toast(msg, 'ok');
+toast.err = (msg) => toast(msg, 'err');
 
 /** Executa uma ação assíncrona controlando o estado "ocupado" e mostrando erros em toast. */
 export function useBusy() {

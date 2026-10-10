@@ -3,11 +3,16 @@ const nextConfig = {
   serverExternalPackages: ['@electric-sql/pglite', 'pg', 'sharp', 'nodemailer'],
   poweredByHeader: false,
   trailingSlash: true,
+  skipTrailingSlashRedirect: true,
   images: { unoptimized: true },
   async headers() {
     return [
       {
         source: '/img/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/uploads/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {

@@ -5,10 +5,11 @@ export function middleware(req) {
   const host = req.headers.get('host') || 'localhost:3100';
   const cleanHost = host.toLowerCase().split(':')[0];
 
-  // Excluir arquivos estáticos e de sistema
+  // Excluir arquivos estáticos, uploads e de sistema
   if (
     url.pathname.startsWith('/_next') ||
     url.pathname.startsWith('/static') ||
+    url.pathname.startsWith('/uploads') ||
     url.pathname.includes('.')
   ) {
     return NextResponse.next();

@@ -181,24 +181,76 @@ export default function PostEditor({ initial, categories, role, siteUrl, aiNote,
             <h3>Capa</h3>
             <p className="a-hint" style={{ margin: '0 0 10px' }}>Aparece inteira, sem cortes. Ideal: 1200×675 px (16:9).</p>
             <div className={`cover-box${drag ? ' drag' : ''}`} style={f.cover_url ? { '--bg-img': `url(${f.cover_thumb || f.cover_url})` } : undefined}
-              onClick={() => !readOnly && fileRef.current.click()} role="button" tabIndex={0} aria-label="Enviar imagem de capa"
-              onKeyDown={(e) => { if (e.key === 'Enter') fileRef.current.click(); }}
+              onClick={() => !readOnly && fileRef.current?.click()} role="button" tabIndex={0} aria-label="Enviar imagem de capa"
+              onKeyDown={(e) => { if (e.key === 'Enter') fileRef.current?.click(); }}
               onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)}
               onDrop={(e) => { e.preventDefault(); setDrag(false); if (!readOnly) uploadCover(e.dataTransfer.files?.[0]); }}>
-              {f.cover_url ? <img src={f.cover_url} alt="" /> : <span style={{ position: 'relative' }}>{busy === 'cover' ? <Spin /> : <><Icon name="upload" size={26} /><br />Clique ou arraste a imagem</>}</span>}
+              {busy === 'cover' ? (
+                <div style={{ zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                  <Spin />
+                  <span style={{ fontSize: 13, color: '#fff' }}>Processando imagem...</span>
+                </div>
+              ) : f.cover_url ? (
+                <img
+                  src={f.cover_url}
+                  alt={f.cover_alt || ''}
+                  onError={(e) => {
+                    // Evita exibir ícone quebrado do navegador se URL for inacessível
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <span style={{ position: 'relative' }}>
+                  <Icon name="upload" size={26} />
+                  <br />
+                  Clique ou arraste a imagem aqui
+                </span>
+              )}
             </div>
-            <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { uploadCover(e.target.files?.[0]); e.target.value = ''; }} />
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+              hidden
+              onChange={(e) => {
+                uploadCover(e.target.files?.[0]);
+                e.target.value = '';
+              }}
+            />
             {!readOnly && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 10 }}>
+                <button
+                  type="button"
+                  className="a-btn ghost sm"
+                  style={{ justifyContent: 'center', width: '100%' }}
+                  onClick={() => fileRef.current?.click()}
+                  disabled={busy === 'cover'}
+                  title="Escolha um arquivo do seu computador"
+                >
+                  <Icon name="upload" size={16} />{busy === 'cover' ? 'Enviando...' : 'Subir manual'}
+                </button>
+                <button
+                  type="button"
+                  className="a-btn primary sm"
+                  style={{ justifyContent: 'center', width: '100%' }}
+                  onClick={() => setCoverModalOpen(true)}
+                  disabled={busy === 'cover'}
+                  title="Criar capa profissional com inteligência artificial"
+                >
+                  <Icon name="sparkles" size={16} />Capa com IA
+                </button>
+              </div>
+            )}
+            {f.cover_url && !readOnly && (
               <button
                 type="button"
-                className="a-btn primary sm block"
-                style={{ marginTop: 10, width: '100%', justifyContent: 'center' }}
-                onClick={() => setCoverModalOpen(true)}
+                className="a-btn ghost sm"
+                style={{ marginTop: 8, width: '100%', justifyContent: 'center' }}
+                onClick={() => { set('cover_url', ''); set('cover_thumb', ''); }}
               >
-                <Icon name="sparkles" size={16} />🎨 Criar Capa Oficial com IA
+                Remover capa
               </button>
             )}
-            {f.cover_url && !readOnly && <button type="button" className="a-btn ghost sm" style={{ marginTop: 8 }} onClick={() => { set('cover_url', ''); set('cover_thumb', ''); }}>Remover capa</button>}
             <div className="a-field" style={{ marginTop: 12 }}>
               <label htmlFor="calt">Texto alternativo da capa</label>
               <input id="calt" className="a-input" value={f.cover_alt} readOnly={readOnly} onChange={(e) => set('cover_alt', e.target.value)} placeholder="Descreva a imagem" />
@@ -269,7 +321,7 @@ export default function PostEditor({ initial, categories, role, siteUrl, aiNote,
           set('cover_url', data.cover_url);
           set('cover_thumb', data.cover_thumb);
           if (data.cover_alt) set('cover_alt', data.cover_alt);
-          toast.ok('Capa oficial gerada e aplicada com sucesso!');
+          toast('Capa oficial gerada e aplicada com sucesso!');
         }}
       />
     </>

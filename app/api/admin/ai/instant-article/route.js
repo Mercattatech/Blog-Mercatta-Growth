@@ -1,7 +1,8 @@
 import { json, route } from '@/lib/api.js';
 import { generateDirectArticle, aiConfigured } from '@/lib/ai.js';
 import { savePost } from '@/lib/posts.js';
-import { getDefaultTenant } from '@/lib/tenant.js';
+import { getDefaultTenant, getTenantById } from '@/lib/tenant.js';
+import { generateAutoCoverForPost } from '@/lib/covers.js';
 
 export const maxDuration = 120;
 
@@ -21,6 +22,8 @@ export const POST = route(async ({ req, user }) => {
   }
 
   try {
+    const tenant = (await getTenantById(targetTenantId)) || (await getDefaultTenant());
+
     const { article, idea } = await generateDirectArticle({
       topic: topic || '',
       categorySlug: category_slug || null,
@@ -28,8 +31,24 @@ export const POST = route(async ({ req, user }) => {
     });
 
     const category = article.category_slug || idea.category_slug;
+    const finalTitle = article.title || idea.title;
+
+    // Gera automaticamente capa oficial da marca
+    let cover = null;
+    try {
+      cover = await generateAutoCoverForPost({
+        title: finalTitle,
+        excerpt: article.excerpt || '',
+        categorySlug: category,
+        focusKeyword: article.focus_keyword || idea.focus_keyword,
+        tenant,
+      });
+    } catch (e) {
+      console.warn('[instant-article] Não foi possível gerar capa automática:', e);
+    }
+
     const post = await savePost({
-      title: article.title || idea.title,
+      title: finalTitle,
       slug: article.slug,
       excerpt: article.excerpt,
       content: article.content_html,
@@ -39,7 +58,9 @@ export const POST = route(async ({ req, user }) => {
       secondary_keywords: article.secondary_keywords || [],
       tags: article.tags || [],
       faq: article.faq || [],
-      cover_alt: article.cover_alt || '',
+      cover_url: cover?.url || null,
+      cover_thumb: cover?.thumb || null,
+      cover_alt: cover?.alt || article.cover_alt || finalTitle,
       category_slugs: category ? [category] : [],
       ai_generated: true,
       tenant_id: targetTenantId,
@@ -50,6 +71,8 @@ export const POST = route(async ({ req, user }) => {
       ok: true,
       post_id: post.id,
       post,
+      cover_url: cover?.url || null,
+      cover_thumb: cover?.thumb || null,
       cover_prompt: article.cover_prompt || '',
       title: post.title,
     });
