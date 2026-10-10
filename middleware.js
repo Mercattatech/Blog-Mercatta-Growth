@@ -17,19 +17,19 @@ export function middleware(req) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set('x-tenant-host', host);
 
-  // Suporte a parâmetro de tenant (dev local: ?tenant=wisemadness) e persistência de navegação
+  // Suporte a parâmetro de tenant (dev/preview: ?tenant=wisemadness) e persistência de navegação
   const tenantParam = url.searchParams.get('tenant');
-  const isLocal = cleanHost.includes('localhost') || cleanHost.includes('127.0.0.1');
+  const isPreviewOrLocal = cleanHost.includes('localhost') || cleanHost.includes('127.0.0.1') || cleanHost.includes('sslip.io') || cleanHost.includes('nip.io') || /^\d+\.\d+\.\d+\.\d+$/.test(cleanHost);
   const devCookieTenant = req.cookies.get('mercatta_dev_tenant')?.value;
 
-  const activeOverride = tenantParam || (isLocal && devCookieTenant ? devCookieTenant : null);
+  const activeOverride = tenantParam || (isPreviewOrLocal && devCookieTenant ? devCookieTenant : null);
   if (activeOverride) {
     requestHeaders.set('x-tenant-override', activeOverride);
   }
 
   // Verifica se é o domínio hub Mercatta
   const isMercattaHub = cleanHost === 'grupomercatta.com.br' || cleanHost === 'www.grupomercatta.com.br';
-  requestHeaders.set('x-is-hub', isMercattaHub ? '1' : '0');
+  requestHeaders.set('x-is-hub', isMercattaHub && !activeOverride ? '1' : '0');
 
   const response = NextResponse.next({
     request: {
