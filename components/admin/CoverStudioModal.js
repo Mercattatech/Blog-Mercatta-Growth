@@ -36,19 +36,24 @@ export default function CoverStudioModal({
   const [busy, setBusy] = useState(''); // 'suggest' | 'render'
   const [error, setError] = useState('');
 
-  // Sugestão inicial da IA ao abrir o modal
+  // Sugestão inicial ao abrir o modal: preenche imediatamente os textos e refina com IA
   useEffect(() => {
     if (!isOpen) return;
     if (postTitle && !highlightText && !mainText) {
+      const words = postTitle.trim().split(/\s+/);
+      const splitIdx = Math.min(3, Math.max(1, Math.floor(words.length / 3)));
+      setHighlightText(words.slice(0, splitIdx).join(' ').toUpperCase());
+      setMainText(words.slice(splitIdx).join(' ').toUpperCase() || postTitle.toUpperCase());
       handleSuggest();
     }
-  }, [isOpen]);
+  }, [isOpen, postTitle]);
 
   if (!isOpen) return null;
 
   const currentBg = customBgUrl.trim() || COVER_PRESETS.find((p) => p.id === selectedPreset)?.url || COVER_PRESETS[0].url;
 
   async function handleSuggest() {
+    if (!postTitle.trim()) return;
     setBusy('suggest');
     setError('');
     try {
@@ -65,13 +70,13 @@ export default function CoverStudioModal({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Falha ao sugerir com IA.');
       if (data.suggestion) {
-        setHighlightText(data.suggestion.highlight_text || '');
-        setMainText(data.suggestion.main_text || '');
+        if (data.suggestion.highlight_text) setHighlightText(data.suggestion.highlight_text);
+        if (data.suggestion.main_text) setMainText(data.suggestion.main_text);
         if (data.suggestion.preset_id) setSelectedPreset(data.suggestion.preset_id);
         if (data.suggestion.cover_alt) setAltText(data.suggestion.cover_alt);
       }
     } catch (err) {
-      setError(err.message);
+      console.warn('[CoverStudioModal] IA indisponível, mantendo textos pré-gerados:', err.message);
     } finally {
       setBusy('');
     }

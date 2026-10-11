@@ -233,7 +233,13 @@ export default function PostEditor({ initial, categories, role, siteUrl, aiNote,
                   type="button"
                   className="a-btn primary sm"
                   style={{ justifyContent: 'center', width: '100%' }}
-                  onClick={() => setCoverModalOpen(true)}
+                  onClick={() => {
+                    if (!f.title.trim()) {
+                      toast('Digite o título do artigo antes de gerar a capa com IA.', 'err');
+                      return;
+                    }
+                    setCoverModalOpen(true);
+                  }}
                   disabled={busy === 'cover'}
                   title="Criar capa profissional com inteligência artificial"
                 >

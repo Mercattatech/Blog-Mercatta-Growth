@@ -26,9 +26,24 @@ export const POST = route(async ({ req, user }) => {
   const tenant = await resolveTenant(user);
 
   if (action === 'suggest') {
-    const { title, excerpt, category_name } = body;
-    if (!title) return json({ error: 'Título é obrigatório para sugestão de capa.' }, 400);
-    const suggestion = await suggestCoverWithAI({ title, excerpt, category_name, tenant });
+    const { title = '', excerpt = '', category_name = '' } = body;
+    if (!title.trim()) return json({ error: 'Título é obrigatório para sugestão de capa.' }, 400);
+
+    let suggestion = null;
+    try {
+      suggestion = await suggestCoverWithAI({ title, excerpt, category_name, tenant });
+    } catch (err) {
+      console.warn('[covers-api] suggestCoverWithAI indisponível, gerando sugestão local:', err.message);
+      const words = title.trim().split(/\s+/);
+      const splitIdx = Math.min(3, Math.max(1, Math.floor(words.length / 3)));
+      suggestion = {
+        highlight_text: words.slice(0, splitIdx).join(' ').toUpperCase(),
+        main_text: words.slice(splitIdx).join(' ').toUpperCase() || title.toUpperCase(),
+        preset_id: 'tech_innovation',
+        cover_alt: `${title} - ${tenant?.name || 'Mercatta'}`,
+      };
+    }
+
     return json({ suggestion, presets: COVER_PRESETS, tenant });
   }
 
