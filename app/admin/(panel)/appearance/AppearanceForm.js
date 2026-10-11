@@ -4,10 +4,547 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, toast, useBusy, Icon } from '@/components/admin/ui.js';
 
-const PALETTES = [
+const TEMPLATES = [
   {
-    name: 'Wise Madness Original',
-    desc: 'Mesh verde-esmeralda e azul profundo, botão coral vibrante e amarelo solar',
+    id: 'corporativo',
+    name: '🏛️ Corporativo & B2B',
+    category: 'corporativo',
+    badge: 'B2B & Institucional',
+    desc: 'Azul marinho profundo, toques em dourado nobre e fundo clean. Transmite autoridade, governança e solidez para empresas.',
+    colors: {
+      header_bg: '#ffffff',
+      header_border: '#e2e8f0',
+      header_text: '#0f172a',
+      header_subtext: '#64748b',
+      header_nav_color: '#475569',
+      header_nav_active: '#1e3a8a',
+      header_icon_color: '#0f172a',
+      btn_header_bg: '#1e3a8a',
+      btn_header_text: '#ffffff',
+
+      hero_bg: 'linear-gradient(135deg, #0a192f 0%, #0f2b48 50%, #081a30 100%)',
+      hero_blob_1: '#1d4ed8',
+      hero_blob_2: '#d97706',
+      hero_blob_3: '#3b82f6',
+      hero_tag_bg: 'rgba(255, 255, 255, 0.12)',
+      hero_tag_text: '#ffffff',
+      hero_tag_border: 'rgba(255, 255, 255, 0.25)',
+      hero_title: '#ffffff',
+      hero_highlight: '#f59e0b',
+      hero_highlight_2: '#fde68a',
+      hero_subtitle: '#cbd5e1',
+      hero_stats_number: '#f59e0b',
+      hero_stats_label: 'rgba(255, 255, 255, 0.75)',
+
+      btn_primary_bg: '#1e3a8a',
+      btn_primary_text: '#ffffff',
+      btn_secondary_bg: 'rgba(255, 255, 255, 0.1)',
+      btn_secondary_text: '#ffffff',
+      btn_secondary_border: 'rgba(255, 255, 255, 0.3)',
+
+      feature_card_bg: '#0f233d',
+      feature_card_border: 'rgba(255, 255, 255, 0.15)',
+      feature_title: '#ffffff',
+      feature_text: '#cbd5e1',
+      feature_meta: '#94a3b8',
+      feature_cover_1: '#1e3a8a',
+      feature_cover_2: '#b45309',
+      badge_bg: '#f59e0b',
+      badge_text: '#0f172a',
+
+      hero_mini_bg: 'rgba(15, 35, 61, 0.75)',
+      hero_mini_border: 'rgba(255, 255, 255, 0.15)',
+      hero_mini_title: '#ffffff',
+      hero_mini_meta: '#94a3b8',
+
+      chips_bar_bg: '#ffffff',
+      chips_bar_border: '#e2e8f0',
+      chip_bg: '#f1f5f9',
+      chip_text: '#0f172a',
+      chip_count_bg: '#ffffff',
+      chip_count_text: '#475569',
+
+      section_title_color: '#0f172a',
+      card_bg: '#ffffff',
+      card_border: '#e2e8f0',
+      card_title: '#0f172a',
+      card_text: '#475569',
+      card_meta: '#64748b',
+      card_pill_bg: 'rgba(30, 58, 138, 0.08)',
+      card_pill_text: '#1e3a8a',
+
+      body_bg: '#f8fafc',
+      body_text: '#0f172a',
+      footer_bg: '#0a192f',
+      footer_text: '#94a3b8',
+      footer_title: '#ffffff',
+
+      primary_color: '#1e3a8a',
+      accent_color: '#f59e0b',
+    },
+    texts: {
+      header_title_text: 'Portal Corporativo',
+      header_tagline_text: 'Governança, Estratégia e Liderança',
+      header_contact_text: 'Fale com a Diretoria',
+      hero_eyebrow_text: '✦ GOVERNANÇA & ALTA PERFORMANCE',
+      hero_title_text: 'Decisões estratégicas que moldam o futuro corporativo',
+      hero_highlight_text: 'com solidez e visão de longo prazo',
+      hero_subtitle_text: 'Análises aprofundadas, inteligência de mercado e diretrizes de gestão para conselheiros, C-Levels e líderes de negócios.',
+      hero_btn_text: 'Explorar Artigos Executivos',
+      hero_btn_search_text: 'Buscar no Acervo',
+    },
+  },
+  {
+    id: 'causas_sociais',
+    name: '🤝 Causas Sociais & ESG',
+    category: 'social',
+    badge: 'Terceiro Setor & Impacto',
+    desc: 'Verde esperança orgânico, toques solares acolhedores e coral humano. Perfeito para ONGs, projetos sociais e ESG.',
+    colors: {
+      header_bg: '#ffffff',
+      header_border: '#dcfce7',
+      header_text: '#065f46',
+      header_subtext: '#059669',
+      header_nav_color: '#374151',
+      header_nav_active: '#059669',
+      header_icon_color: '#065f46',
+      btn_header_bg: '#ea580c',
+      btn_header_text: '#ffffff',
+
+      hero_bg: 'linear-gradient(135deg, #063d2e 0%, #0b4f3b 50%, #134e4a 100%)',
+      hero_blob_1: '#10b981',
+      hero_blob_2: '#f59e0b',
+      hero_blob_3: '#ea580c',
+      hero_tag_bg: 'rgba(255, 255, 255, 0.16)',
+      hero_tag_text: '#ffffff',
+      hero_tag_border: 'rgba(255, 255, 255, 0.3)',
+      hero_title: '#ffffff',
+      hero_highlight: '#fde047',
+      hero_highlight_2: '#fef08a',
+      hero_subtitle: '#d1fae5',
+      hero_stats_number: '#fde047',
+      hero_stats_label: 'rgba(255, 255, 255, 0.85)',
+
+      btn_primary_bg: '#ea580c',
+      btn_primary_text: '#ffffff',
+      btn_secondary_bg: 'rgba(255, 255, 255, 0.12)',
+      btn_secondary_text: '#ffffff',
+      btn_secondary_border: 'rgba(255, 255, 255, 0.35)',
+
+      feature_card_bg: '#064232',
+      feature_card_border: 'rgba(255, 255, 255, 0.18)',
+      feature_title: '#ffffff',
+      feature_text: '#d1fae5',
+      feature_meta: '#a7f3d0',
+      feature_cover_1: '#059669',
+      feature_cover_2: '#ea580c',
+      badge_bg: '#f59e0b',
+      badge_text: '#064e3b',
+
+      hero_mini_bg: 'rgba(6, 66, 50, 0.75)',
+      hero_mini_border: 'rgba(255, 255, 255, 0.18)',
+      hero_mini_title: '#ffffff',
+      hero_mini_meta: '#a7f3d0',
+
+      chips_bar_bg: '#ffffff',
+      chips_bar_border: '#dcfce7',
+      chip_bg: '#f0fdf4',
+      chip_text: '#065f46',
+      chip_count_bg: '#ffffff',
+      chip_count_text: '#059669',
+
+      section_title_color: '#064e3b',
+      card_bg: '#ffffff',
+      card_border: '#e2e8f0',
+      card_title: '#064e3b',
+      card_text: '#374151',
+      card_meta: '#6b7280',
+      card_pill_bg: 'rgba(5, 150, 105, 0.1)',
+      card_pill_text: '#059669',
+
+      body_bg: '#f7fee7',
+      body_text: '#064e3b',
+      footer_bg: '#063d2e',
+      footer_text: '#a7f3d0',
+      footer_title: '#ffffff',
+
+      primary_color: '#059669',
+      accent_color: '#ea580c',
+    },
+    texts: {
+      header_title_text: 'Instituto Esperança & Impacto',
+      header_tagline_text: 'Transformando realidades através da solidariedade',
+      header_contact_text: 'Quero Ser Voluntário',
+      hero_eyebrow_text: '✦ IMPACTO SOCIAL & TRANSFORMAÇÃO REAL',
+      hero_title_text: 'Juntos construímos oportunidades e devolvemos a dignidade',
+      hero_highlight_text: 'com amor em ação',
+      hero_subtitle_text: 'Acompanhe nossos projetos comunitários, campanhas de apoio a famílias e descubra como você e sua empresa podem gerar impacto verdadeiro.',
+      hero_btn_text: 'Conhecer Nossos Projetos',
+      hero_btn_search_text: 'Buscar Causas',
+    },
+  },
+  {
+    id: 'escola_idiomas',
+    name: '🌍 Escola de Idiomas & EdTech',
+    category: 'idiomas',
+    badge: 'Cursos & Fluência',
+    desc: 'Azul cobalto dinâmico, amarelo estimulante e acentos ciano. Atmosfera moderna e motivadora para cursos e intercâmbios.',
+    colors: {
+      header_bg: '#ffffff',
+      header_border: '#e0e7ff',
+      header_text: '#1e40af',
+      header_subtext: '#4338ca',
+      header_nav_color: '#334155',
+      header_nav_active: '#2563eb',
+      header_icon_color: '#1e40af',
+      btn_header_bg: '#f59e0b',
+      btn_header_text: '#0f172a',
+
+      hero_bg: 'linear-gradient(135deg, #0f1e4a 0%, #1e3a8a 50%, #2e1065 100%)',
+      hero_blob_1: '#2563eb',
+      hero_blob_2: '#f59e0b',
+      hero_blob_3: '#06b6d4',
+      hero_tag_bg: 'rgba(255, 255, 255, 0.15)',
+      hero_tag_text: '#ffffff',
+      hero_tag_border: 'rgba(255, 255, 255, 0.3)',
+      hero_title: '#ffffff',
+      hero_highlight: '#fbbf24',
+      hero_highlight_2: '#fef08a',
+      hero_subtitle: '#e0e7ff',
+      hero_stats_number: '#fbbf24',
+      hero_stats_label: 'rgba(255, 255, 255, 0.85)',
+
+      btn_primary_bg: '#f59e0b',
+      btn_primary_text: '#0f172a',
+      btn_secondary_bg: 'rgba(255, 255, 255, 0.14)',
+      btn_secondary_text: '#ffffff',
+      btn_secondary_border: 'rgba(255, 255, 255, 0.35)',
+
+      feature_card_bg: '#132152',
+      feature_card_border: 'rgba(255, 255, 255, 0.18)',
+      feature_title: '#ffffff',
+      feature_text: '#e0e7ff',
+      feature_meta: '#c7d2fe',
+      feature_cover_1: '#2563eb',
+      feature_cover_2: '#f59e0b',
+      badge_bg: '#fbbf24',
+      badge_text: '#0f172a',
+
+      hero_mini_bg: 'rgba(19, 33, 82, 0.8)',
+      hero_mini_border: 'rgba(255, 255, 255, 0.18)',
+      hero_mini_title: '#ffffff',
+      hero_mini_meta: '#c7d2fe',
+
+      chips_bar_bg: '#ffffff',
+      chips_bar_border: '#e0e7ff',
+      chip_bg: '#eff6ff',
+      chip_text: '#1e40af',
+      chip_count_bg: '#ffffff',
+      chip_count_text: '#2563eb',
+
+      section_title_color: '#1e40af',
+      card_bg: '#ffffff',
+      card_border: '#e2e8f0',
+      card_title: '#0f172a',
+      card_text: '#475569',
+      card_meta: '#64748b',
+      card_pill_bg: 'rgba(37, 99, 235, 0.1)',
+      card_pill_text: '#2563eb',
+
+      body_bg: '#f8fafc',
+      body_text: '#0f172a',
+      footer_bg: '#0f1e4a',
+      footer_text: '#94a3b8',
+      footer_title: '#ffffff',
+
+      primary_color: '#2563eb',
+      accent_color: '#f59e0b',
+    },
+    texts: {
+      header_title_text: 'Global Languages Academy',
+      header_tagline_text: 'Aprenda idiomas e conquiste o mundo',
+      header_contact_text: 'Agendar Aula Grátis',
+      hero_eyebrow_text: '✦ METODOLOGIA PRÁTICA & IMERSÃO TOTAL',
+      hero_title_text: 'Destrave a sua fluência e fale com total segurança',
+      hero_highlight_text: 'em tempo recorde',
+      hero_subtitle_text: 'Artigos práticos, guias de conversação, vocabulário para viagens e negócios, e táticas comprovadas para acelerar seu aprendizado.',
+      hero_btn_text: 'Ver Guias de Fluência',
+      hero_btn_search_text: 'Buscar Dicas de Idiomas',
+    },
+  },
+  {
+    id: 'rent_a_car',
+    name: '🚗 Rent a Car & Frotas',
+    category: 'rentacar',
+    badge: 'Locadora & Mobilidade',
+    desc: 'Preto asfalto carbono, amarelo sinalização de alta visibilidade e acentos esportivos. Estética automotiva de liberdade e agilidade.',
+    colors: {
+      header_bg: '#111827',
+      header_border: '#1f2937',
+      header_text: '#facc15',
+      header_subtext: '#9ca3af',
+      header_nav_color: '#d1d5db',
+      header_nav_active: '#facc15',
+      header_icon_color: '#facc15',
+      btn_header_bg: '#facc15',
+      btn_header_text: '#111827',
+
+      hero_bg: 'linear-gradient(135deg, #090d16 0%, #111827 50%, #1f2937 100%)',
+      hero_blob_1: '#eab308',
+      hero_blob_2: '#ef4444',
+      hero_blob_3: '#3b82f6',
+      hero_tag_bg: 'rgba(250, 204, 21, 0.15)',
+      hero_tag_text: '#facc15',
+      hero_tag_border: 'rgba(250, 204, 21, 0.35)',
+      hero_title: '#f9fafb',
+      hero_highlight: '#facc15',
+      hero_highlight_2: '#fef08a',
+      hero_subtitle: '#d1d5db',
+      hero_stats_number: '#facc15',
+      hero_stats_label: '#9ca3af',
+
+      btn_primary_bg: '#facc15',
+      btn_primary_text: '#111827',
+      btn_secondary_bg: 'rgba(255, 255, 255, 0.1)',
+      btn_secondary_text: '#f9fafb',
+      btn_secondary_border: 'rgba(250, 204, 21, 0.35)',
+
+      feature_card_bg: '#182234',
+      feature_card_border: 'rgba(250, 204, 21, 0.25)',
+      feature_title: '#f9fafb',
+      feature_text: '#d1d5db',
+      feature_meta: '#9ca3af',
+      feature_cover_1: '#1e293b',
+      feature_cover_2: '#ca8a04',
+      badge_bg: '#facc15',
+      badge_text: '#111827',
+
+      hero_mini_bg: 'rgba(24, 34, 52, 0.85)',
+      hero_mini_border: 'rgba(250, 204, 21, 0.25)',
+      hero_mini_title: '#f9fafb',
+      hero_mini_meta: '#9ca3af',
+
+      chips_bar_bg: '#111827',
+      chips_bar_border: '#1f2937',
+      chip_bg: '#1f2937',
+      chip_text: '#f9fafb',
+      chip_count_bg: '#374151',
+      chip_count_text: '#facc15',
+
+      section_title_color: '#f9fafb',
+      card_bg: '#111827',
+      card_border: '#1f2937',
+      card_title: '#f9fafb',
+      card_text: '#9ca3af',
+      card_meta: '#6b7280',
+      card_pill_bg: 'rgba(250, 204, 21, 0.15)',
+      card_pill_text: '#facc15',
+
+      body_bg: '#0b0f17',
+      body_text: '#f9fafb',
+      footer_bg: '#070a0f',
+      footer_text: '#9ca3af',
+      footer_title: '#f9fafb',
+
+      primary_color: '#facc15',
+      accent_color: '#ef4444',
+    },
+    texts: {
+      header_title_text: 'Rota Livre Rent a Car',
+      header_tagline_text: 'Sua jornada com autonomia, conforto e segurança',
+      header_contact_text: 'Reservar Veículo',
+      hero_eyebrow_text: '✦ MOBILIDADE & LOCAÇÃO SEM BUROCRACIA',
+      hero_title_text: 'O melhor caminho para sua próxima viagem começa aqui',
+      hero_highlight_text: 'com a frota perfeita',
+      hero_subtitle_text: 'Dicas imperdíveis de roteiros rodoviários, cuidados com o veículo, comparativos de modelos e guias para economizar na sua locação.',
+      hero_btn_text: 'Explorar Dicas de Viagem',
+      hero_btn_search_text: 'Buscar Modelos & Destinos',
+    },
+  },
+  {
+    id: 'marketing_growth',
+    name: '🚀 Marketing & Growth',
+    category: 'marketing',
+    badge: 'Performance & Tráfego',
+    desc: 'Roxo profundo magnético, acentos em magenta/fúcsia neon e ciano elétrico. Botões de alto impacto para máxima conversão.',
+    colors: {
+      header_bg: '#ffffff',
+      header_border: '#f3e8ff',
+      header_text: '#6b21a8',
+      header_subtext: '#a855f7',
+      header_nav_color: '#475569',
+      header_nav_active: '#9333ea',
+      header_icon_color: '#6b21a8',
+      btn_header_bg: '#ec4899',
+      btn_header_text: '#ffffff',
+
+      hero_bg: 'linear-gradient(135deg, #1e0938 0%, #3b0764 50%, #4c1d95 100%)',
+      hero_blob_1: '#d946ef',
+      hero_blob_2: '#06b6d4',
+      hero_blob_3: '#f43f5e',
+      hero_tag_bg: 'rgba(255, 255, 255, 0.15)',
+      hero_tag_text: '#ffffff',
+      hero_tag_border: 'rgba(255, 255, 255, 0.3)',
+      hero_title: '#ffffff',
+      hero_highlight: '#f472b6',
+      hero_highlight_2: '#fbcfe8',
+      hero_subtitle: '#f3e8ff',
+      hero_stats_number: '#f472b6',
+      hero_stats_label: 'rgba(255, 255, 255, 0.85)',
+
+      btn_primary_bg: '#ec4899',
+      btn_primary_text: '#ffffff',
+      btn_secondary_bg: 'rgba(255, 255, 255, 0.12)',
+      btn_secondary_text: '#ffffff',
+      btn_secondary_border: 'rgba(255, 255, 255, 0.35)',
+
+      feature_card_bg: '#2d0f50',
+      feature_card_border: 'rgba(244, 114, 182, 0.3)',
+      feature_title: '#ffffff',
+      feature_text: '#f3e8ff',
+      feature_meta: '#e9d5ff',
+      feature_cover_1: '#7c3aed',
+      feature_cover_2: '#ec4899',
+      badge_bg: '#ec4899',
+      badge_text: '#ffffff',
+
+      hero_mini_bg: 'rgba(45, 15, 80, 0.8)',
+      hero_mini_border: 'rgba(244, 114, 182, 0.25)',
+      hero_mini_title: '#ffffff',
+      hero_mini_meta: '#e9d5ff',
+
+      chips_bar_bg: '#ffffff',
+      chips_bar_border: '#f3e8ff',
+      chip_bg: '#faf5ff',
+      chip_text: '#6b21a8',
+      chip_count_bg: '#ffffff',
+      chip_count_text: '#a855f7',
+
+      section_title_color: '#3b0764',
+      card_bg: '#ffffff',
+      card_border: '#f3e8ff',
+      card_title: '#1e0938',
+      card_text: '#475569',
+      card_meta: '#64748b',
+      card_pill_bg: 'rgba(236, 72, 153, 0.1)',
+      card_pill_text: '#db2777',
+
+      body_bg: '#fdf4ff',
+      body_text: '#1e0938',
+      footer_bg: '#1a052e',
+      footer_text: '#c084fc',
+      footer_title: '#ffffff',
+
+      primary_color: '#9333ea',
+      accent_color: '#ec4899',
+    },
+    texts: {
+      header_title_text: 'GrowthLab Marketing',
+      header_tagline_text: 'Estratégias de alta performance, tráfego e escala',
+      header_contact_text: 'Solicitar Proposta',
+      hero_eyebrow_text: '✦ GROWTH HACKING & PERFORMANCE DIGITAL',
+      hero_title_text: 'Multiplique seus leads, fature mais e domine o mercado',
+      hero_highlight_text: 'com previsibilidade',
+      hero_subtitle_text: 'Playbooks práticos de mídia paga, SEO de autoridade, copywriting persuasivo e inteligência artificial aplicada ao marketing digital.',
+      hero_btn_text: 'Explorar Táticas de Growth',
+      hero_btn_search_text: 'Buscar Estratégias',
+    },
+  },
+  {
+    id: 'consultorias',
+    name: '💼 Consultorias & Estratégia',
+    category: 'consultoria',
+    badge: 'Estratégia & Advisory',
+    desc: 'Azul meia-noite clássico com bronze/ouro champagne refinado. Sobriedade e luxo discreto para consultoria de gestão e finanças.',
+    colors: {
+      header_bg: '#ffffff',
+      header_border: '#e2e8f0',
+      header_text: '#0b132b',
+      header_subtext: '#5c677d',
+      header_nav_color: '#475569',
+      header_nav_active: '#c29b38',
+      header_icon_color: '#0b132b',
+      btn_header_bg: '#c29b38',
+      btn_header_text: '#ffffff',
+
+      hero_bg: 'linear-gradient(135deg, #070c1b 0%, #0b132b 50%, #1c2541 100%)',
+      hero_blob_1: '#1c2541',
+      hero_blob_2: '#c29b38',
+      hero_blob_3: '#3a506b',
+      hero_tag_bg: 'rgba(194, 155, 56, 0.18)',
+      hero_tag_text: '#dfb15b',
+      hero_tag_border: 'rgba(194, 155, 56, 0.4)',
+      hero_title: '#ffffff',
+      hero_highlight: '#dfb15b',
+      hero_highlight_2: '#fef08a',
+      hero_subtitle: '#cbd5e1',
+      hero_stats_number: '#dfb15b',
+      hero_stats_label: 'rgba(255, 255, 255, 0.75)',
+
+      btn_primary_bg: '#c29b38',
+      btn_primary_text: '#ffffff',
+      btn_secondary_bg: 'rgba(255, 255, 255, 0.1)',
+      btn_secondary_text: '#ffffff',
+      btn_secondary_border: 'rgba(194, 155, 56, 0.4)',
+
+      feature_card_bg: '#111a33',
+      feature_card_border: 'rgba(194, 155, 56, 0.25)',
+      feature_title: '#ffffff',
+      feature_text: '#cbd5e1',
+      feature_meta: '#94a3b8',
+      feature_cover_1: '#1c2541',
+      feature_cover_2: '#c29b38',
+      badge_bg: '#c29b38',
+      badge_text: '#ffffff',
+
+      hero_mini_bg: 'rgba(17, 26, 51, 0.8)',
+      hero_mini_border: 'rgba(194, 155, 56, 0.25)',
+      hero_mini_title: '#ffffff',
+      hero_mini_meta: '#94a3b8',
+
+      chips_bar_bg: '#ffffff',
+      chips_bar_border: '#e2e8f0',
+      chip_bg: '#f8fafc',
+      chip_text: '#0b132b',
+      chip_count_bg: '#ffffff',
+      chip_count_text: '#c29b38',
+
+      section_title_color: '#0b132b',
+      card_bg: '#ffffff',
+      card_border: '#e2e8f0',
+      card_title: '#0b132b',
+      card_text: '#475569',
+      card_meta: '#64748b',
+      card_pill_bg: 'rgba(194, 155, 56, 0.12)',
+      card_pill_text: '#b08829',
+
+      body_bg: '#f8fafc',
+      body_text: '#0b132b',
+      footer_bg: '#070c1b',
+      footer_text: '#94a3b8',
+      footer_title: '#ffffff',
+
+      primary_color: '#0b132b',
+      accent_color: '#c29b38',
+    },
+    texts: {
+      header_title_text: 'Vértice Consultoria Estratégica',
+      header_tagline_text: 'Inteligência e governança para organizações complexas',
+      header_contact_text: 'Diagnóstico Gratuito',
+      hero_eyebrow_text: '✦ ESTRATÉGIA EMPRESARIAL & EFICIÊNCIA',
+      hero_title_text: 'Transforme desafios complexos em vantagens competitivas',
+      hero_highlight_text: 'com máxima precisão',
+      hero_subtitle_text: 'Metodologias consolidadas, reestruturação financeira, M&A, governança corporativa e otimização de processos para líderes que buscam sustentabilidade.',
+      hero_btn_text: 'Acessar Artigos Estratégicos',
+      hero_btn_search_text: 'Buscar Soluções',
+    },
+  },
+  {
+    id: 'wise_original',
+    name: '💎 Wise Madness Original',
+    category: 'original',
+    badge: 'Criativo & Ousado',
+    desc: 'Mesh verde-esmeralda e azul profundo, botão coral vibrante e amarelo solar. Estética original de alto impacto.',
     colors: {
       header_bg: '#ffffff',
       header_border: '#e2e8f0',
@@ -81,8 +618,11 @@ const PALETTES = [
     },
   },
   {
-    name: 'Dark Tech & Neon',
-    desc: 'Grafite profundo com azul elétrico, acentos ciano e roxo luminoso',
+    id: 'dark_tech',
+    name: '⚡ Dark Tech & Neon',
+    category: 'tech',
+    badge: 'Tech & Dev',
+    desc: 'Grafite profundo com azul elétrico, acentos ciano e roxo luminoso. Estilo escuro futurista de alto padrão.',
     colors: {
       header_bg: '#090d16',
       header_border: '#1e293b',
@@ -155,157 +695,9 @@ const PALETTES = [
       accent_color: '#38bdf8',
     },
   },
-  {
-    name: 'Clean Corporativo',
-    desc: 'Branco elegante com azul marinho institucional e detalhes em dourado nobre',
-    colors: {
-      header_bg: '#ffffff',
-      header_border: '#e2e8f0',
-      header_text: '#0f172a',
-      header_subtext: '#64748b',
-      header_nav_color: '#475569',
-      header_nav_active: '#1e3a8a',
-      header_icon_color: '#0f172a',
-      btn_header_bg: '#1e3a8a',
-      btn_header_text: '#ffffff',
-
-      hero_bg: '#0f172a',
-      hero_blob_1: '#1e3a8a',
-      hero_blob_2: '#eab308',
-      hero_blob_3: '#3b82f6',
-      hero_tag_bg: 'rgba(255, 255, 255, 0.12)',
-      hero_tag_text: '#ffffff',
-      hero_tag_border: 'rgba(255, 255, 255, 0.25)',
-      hero_title: '#ffffff',
-      hero_highlight: '#eab308',
-      hero_highlight_2: '#fef08a',
-      hero_subtitle: '#cbd5e1',
-      hero_stats_number: '#eab308',
-      hero_stats_label: 'rgba(255, 255, 255, 0.7)',
-
-      btn_primary_bg: '#1e3a8a',
-      btn_primary_text: '#ffffff',
-      btn_secondary_bg: 'rgba(255, 255, 255, 0.12)',
-      btn_secondary_text: '#ffffff',
-      btn_secondary_border: 'rgba(255, 255, 255, 0.25)',
-
-      feature_card_bg: '#1e293b',
-      feature_card_border: 'rgba(255, 255, 255, 0.15)',
-      feature_title: '#ffffff',
-      feature_text: '#cbd5e1',
-      feature_meta: '#94a3b8',
-      feature_cover_1: '#1e3a8a',
-      feature_cover_2: '#eab308',
-      badge_bg: '#eab308',
-      badge_text: '#000000',
-
-      hero_mini_bg: 'rgba(255, 255, 255, 0.08)',
-      hero_mini_border: 'rgba(255, 255, 255, 0.15)',
-      hero_mini_title: '#ffffff',
-      hero_mini_meta: '#94a3b8',
-
-      chips_bar_bg: '#ffffff',
-      chips_bar_border: '#e2e8f0',
-      chip_bg: '#f1f5f9',
-      chip_text: '#0f172a',
-      chip_count_bg: '#ffffff',
-      chip_count_text: '#64748b',
-
-      section_title_color: '#0f172a',
-      card_bg: '#ffffff',
-      card_border: '#e2e8f0',
-      card_title: '#0f172a',
-      card_text: '#475569',
-      card_meta: '#64748b',
-      card_pill_bg: 'rgba(30, 58, 138, 0.1)',
-      card_pill_text: '#1e3a8a',
-
-      body_bg: '#f8fafc',
-      body_text: '#0f172a',
-      footer_bg: '#0f172a',
-      footer_text: '#94a3b8',
-      footer_title: '#ffffff',
-
-      primary_color: '#1e3a8a',
-      accent_color: '#eab308',
-    },
-  },
-  {
-    name: 'Growth & Esmeralda',
-    desc: 'Verde esmeralda moderno com menta luminosa e fundo ultra clean',
-    colors: {
-      header_bg: '#ffffff',
-      header_border: '#d1fae5',
-      header_text: '#065f46',
-      header_subtext: '#059669',
-      header_nav_color: '#374151',
-      header_nav_active: '#059669',
-      header_icon_color: '#065f46',
-      btn_header_bg: '#10b981',
-      btn_header_text: '#ffffff',
-
-      hero_bg: '#064e3b',
-      hero_blob_1: '#059669',
-      hero_blob_2: '#10b981',
-      hero_blob_3: '#fbbf24',
-      hero_tag_bg: 'rgba(255, 255, 255, 0.15)',
-      hero_tag_text: '#ffffff',
-      hero_tag_border: 'rgba(255, 255, 255, 0.25)',
-      hero_title: '#ffffff',
-      hero_highlight: '#fbbf24',
-      hero_highlight_2: '#fde68a',
-      hero_subtitle: '#d1fae5',
-      hero_stats_number: '#fbbf24',
-      hero_stats_label: 'rgba(255, 255, 255, 0.8)',
-
-      btn_primary_bg: '#10b981',
-      btn_primary_text: '#ffffff',
-      btn_secondary_bg: 'rgba(255, 255, 255, 0.12)',
-      btn_secondary_text: '#ffffff',
-      btn_secondary_border: 'rgba(255, 255, 255, 0.3)',
-
-      feature_card_bg: '#042f2e',
-      feature_card_border: 'rgba(255, 255, 255, 0.15)',
-      feature_title: '#ffffff',
-      feature_text: '#ccfbf1',
-      feature_meta: '#a7f3d0',
-      feature_cover_1: '#059669',
-      feature_cover_2: '#10b981',
-      badge_bg: '#10b981',
-      badge_text: '#ffffff',
-
-      hero_mini_bg: 'rgba(255, 255, 255, 0.08)',
-      hero_mini_border: 'rgba(255, 255, 255, 0.15)',
-      hero_mini_title: '#ffffff',
-      hero_mini_meta: '#a7f3d0',
-
-      chips_bar_bg: '#ffffff',
-      chips_bar_border: '#d1fae5',
-      chip_bg: '#ecfdf5',
-      chip_text: '#065f46',
-      chip_count_bg: '#ffffff',
-      chip_count_text: '#059669',
-
-      section_title_color: '#064e3b',
-      card_bg: '#ffffff',
-      card_border: '#d1fae5',
-      card_title: '#064e3b',
-      card_text: '#374151',
-      card_meta: '#6b7280',
-      card_pill_bg: '#ecfdf5',
-      card_pill_text: '#059669',
-
-      body_bg: '#f0fdf4',
-      body_text: '#064e3b',
-      footer_bg: '#064e3b',
-      footer_text: '#a7f3d0',
-      footer_title: '#ffffff',
-
-      primary_color: '#065f46',
-      accent_color: '#10b981',
-    },
-  },
 ];
+
+const PALETTES = TEMPLATES;
 
 function ColorField({ label, hint, value, onChange }) {
   const isHex = typeof value === 'string' && value.startsWith('#');
@@ -1222,10 +1614,33 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
     setTheme((prev) => ({ ...prev, [key]: val }));
   };
 
-  const applyPalette = (palette) => {
-    setTheme((prev) => ({ ...prev, ...palette.colors }));
-    toast(`Paleta "${palette.name}" aplicada na visualização!`);
+  const [selectedTemplateCategory, setSelectedTemplateCategory] = useState('all');
+  const [activeTemplateId, setActiveTemplateId] = useState(null);
+
+  const applyTemplate = (template, withTexts = false) => {
+    setActiveTemplateId(template.id);
+    setTheme((prev) => {
+      const next = { ...prev, ...template.colors };
+      if (withTexts && template.texts) {
+        Object.assign(next, template.texts);
+      }
+      return next;
+    });
+
+    if (withTexts && template.texts) {
+      setGeneralForm((prev) => ({
+        ...prev,
+        site_title: template.texts.header_title_text || prev.site_title,
+        site_tagline: template.texts.header_tagline_text || prev.site_tagline,
+        site_description: template.texts.hero_subtitle_text || prev.site_description,
+      }));
+      toast(`Template "${template.name}" aplicado com cores e textos sugeridos!`);
+    } else {
+      toast(`Cores do template "${template.name}" aplicadas no blog!`);
+    }
   };
+
+  const applyPalette = (palette) => applyTemplate(palette, false);
 
   const handleUploadLogo = async (e) => {
     const file = e.target.files?.[0];
@@ -2010,48 +2425,171 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
         </div>
       </div>
 
-      {/* PALETAS RÁPIDAS (TEMAS PRONTOS) */}
-      <div style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--line)',
-        borderRadius: 16,
-        padding: '16px 20px',
-        marginBottom: '2rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
-          <strong style={{ fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}>
-            🎨 Paletas Prontas de 1-Clique (Carrega todas as cores harmonicamente):
-          </strong>
-          <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Você pode personalizar qualquer campo separadamente depois</span>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10 }}>
-          {PALETTES.map((pal) => (
-            <button
-              key={pal.name}
-              type="button"
-              onClick={() => applyPalette(pal)}
-              className="a-btn ghost"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '10px 14px',
-                borderRadius: 12,
-                textAlign: 'left',
-                border: '1px solid var(--line)'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', marginBottom: 4 }}>
-                <span style={{ width: 14, height: 14, borderRadius: '50%', background: pal.colors.primary_color }} />
-                <span style={{ width: 14, height: 14, borderRadius: '50%', background: pal.colors.accent_color }} />
-                <span style={{ width: 14, height: 14, borderRadius: '50%', background: pal.colors.btn_primary_bg }} />
-                <strong style={{ fontSize: '0.85rem', marginLeft: 4 }}>{pal.name}</strong>
+      {/* SELETOR DE TEMPLATES E NICHOS PRONTOS (1-CLIQUE) */}
+      {(() => {
+        const filtered = selectedTemplateCategory === 'all'
+          ? TEMPLATES
+          : TEMPLATES.filter((t) => t.category === selectedTemplateCategory);
+
+        return (
+          <div style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--line)',
+            borderRadius: 18,
+            padding: '20px 22px',
+            marginBottom: '2rem',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
+              <div>
+                <strong style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text)' }}>
+                  <span>🎨</span> Templates Prontos por Nicho & Segmento (Carregamento em 1-Clique)
+                </strong>
+                <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: 'var(--muted)' }}>
+                  Escolha um template profissional sob medida para o segmento do blog. Aplique apenas a paleta harmônica de cores ou o tema completo com os textos de autoridade sugeridos!
+                </p>
               </div>
-              <small style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>{pal.desc}</small>
-            </button>
-          ))}
-        </div>
-      </div>
+              <span style={{ fontSize: '0.75rem', color: '#60a5fa', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', padding: '4px 12px', borderRadius: 999, fontWeight: 700 }}>
+                {TEMPLATES.length} templates profissionais
+              </span>
+            </div>
+
+            {/* FILTROS POR NICHO */}
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+              {[
+                { id: 'all', label: 'Todos os Segmentos' },
+                { id: 'corporativo', label: '🏛️ Corporativo & B2B' },
+                { id: 'social', label: '🤝 Causas Sociais' },
+                { id: 'idiomas', label: '🌍 Escola de Idiomas' },
+                { id: 'rentacar', label: '🚗 Rent a Car' },
+                { id: 'marketing', label: '🚀 Marketing & Growth' },
+                { id: 'consultoria', label: '💼 Consultorias' },
+              ].map((cat) => {
+                const isActive = selectedTemplateCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedTemplateCategory(cat.id)}
+                    style={{
+                      background: isActive ? '#2563eb' : 'rgba(255,255,255,0.05)',
+                      color: isActive ? '#ffffff' : 'var(--muted)',
+                      border: isActive ? '1px solid #2563eb' : '1px solid var(--line)',
+                      padding: '5px 13px',
+                      borderRadius: 999,
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.18s ease',
+                      boxShadow: isActive ? '0 2px 8px rgba(37,99,235,0.3)' : 'none',
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* GRADE DOS TEMPLATES */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 14 }}>
+              {filtered.map((tpl) => {
+                const isCurrent = activeTemplateId === tpl.id;
+                return (
+                  <div
+                    key={tpl.id}
+                    style={{
+                      background: isCurrent ? 'rgba(59,130,246,0.08)' : 'var(--surface-2)',
+                      border: isCurrent ? '2px solid #3b82f6' : '1px solid var(--line)',
+                      borderRadius: 14,
+                      padding: '14px 16px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 10,
+                      position: 'relative',
+                      boxShadow: isCurrent ? '0 0 0 3px rgba(59,130,246,0.2)' : 'none',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                      <div>
+                        <strong style={{ fontSize: '0.92rem', display: 'block', color: 'var(--text)', marginBottom: 3 }}>
+                          {tpl.name}
+                        </strong>
+                        <span style={{
+                          display: 'inline-block',
+                          fontSize: '0.68rem',
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: 4,
+                          background: 'rgba(255,255,255,0.08)',
+                          color: 'var(--muted)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em'
+                        }}>
+                          {tpl.badge}
+                        </span>
+                      </div>
+
+                      {/* SWATCHES DE CORES DO TEMPLATE */}
+                      <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.2)', padding: '3px 6px', borderRadius: 99, alignItems: 'center' }}>
+                        <span style={{ width: 14, height: 14, borderRadius: '50%', background: tpl.colors.primary_color }} title="Cor Primária" />
+                        <span style={{ width: 14, height: 14, borderRadius: '50%', background: tpl.colors.accent_color }} title="Destaque / Acento" />
+                        <span style={{ width: 14, height: 14, borderRadius: '50%', background: tpl.colors.btn_primary_bg }} title="Botão Principal (CTA)" />
+                        <span style={{ width: 14, height: 14, borderRadius: '50%', background: tpl.colors.hero_blob_1 }} title="Mesh / Luz" />
+                      </div>
+                    </div>
+
+                    <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--muted)', lineHeight: 1.45, flex: 1 }}>
+                      {tpl.desc}
+                    </p>
+
+                    {/* BOTÕES DE AÇÃO DO TEMPLATE */}
+                    <div style={{ display: 'grid', gridTemplateColumns: tpl.texts ? '1fr 1.3fr' : '1fr', gap: 8, marginTop: 4 }}>
+                      <button
+                        type="button"
+                        onClick={() => applyTemplate(tpl, false)}
+                        className="a-btn ghost sm"
+                        style={{
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          padding: '6px 10px',
+                          borderRadius: 8,
+                          border: '1px solid var(--line)',
+                        }}
+                        title="Aplica apenas as cores harmônicas sem alterar seus textos atuais"
+                      >
+                        🎨 Aplicar Cores
+                      </button>
+
+                      {tpl.texts && (
+                        <button
+                          type="button"
+                          onClick={() => applyTemplate(tpl, true)}
+                          className="a-btn primary sm"
+                          style={{
+                            justifyContent: 'center',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            padding: '6px 10px',
+                            borderRadius: 8,
+                            background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
+                            color: '#ffffff',
+                            border: 'none',
+                            boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
+                          }}
+                          title="Aplica a paleta de cores e carrega os títulos, slogan e textos estratégicos sugeridos para este nicho"
+                        >
+                          ✨ Cores + Textos
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* NAVEGAÇÃO DE ABAS COMPLETAMENTE SEPARADAS */}
       <div style={{
