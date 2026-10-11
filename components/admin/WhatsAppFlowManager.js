@@ -776,7 +776,7 @@ export default function WhatsAppFlowManager({ initialData, user, isSuper = false
     email: 'lead@empresa.com',
     answers: { need: 'Serviços de Marketing com IA', urgency: 'Imediato' },
     source_url: 'https://cliente.com.br/artigo-estrategico/',
-    captured_at: new Date().toISOString(),
+    captured_at: '2026-10-11T12:00:00.000Z',
   },
 }, null, 2)}
               </pre>

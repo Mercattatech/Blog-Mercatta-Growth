@@ -1,72 +1,73 @@
 # 🚀 Guia de Implantação: Coolify na Hostinger VPS (PostgreSQL)
 
-Este guia contém tudo o que você precisa para colocar o **Mercatta Growth (SaaS de Blogs com IA)** no ar com 1 clique no **Coolify** e na sua VPS da **Hostinger**, integrado com **PostgreSQL**.
+Este guia contém o comando **1-Clique via terminal (cURL)** e o passo a passo para implantar o **Mercatta Growth (SaaS de Blogs com IA)** no **Coolify** na sua VPS da **Hostinger**, integrado ao **PostgreSQL**.
 
 ---
 
-## 🎯 Opção 1: Instalador com 1 Clique no Terminal da VPS (Recomendado)
+## ⚡ 1. Instalador 1-Clique via Terminal SSH (O mais rápido)
 
-Se você já acessa sua VPS da Hostinger via SSH, você pode instalar e subir todo o ambiente (Node.js, Next.js 16, Docker e PostgreSQL) em 1 único comando:
+Basta acessar sua VPS da Hostinger via SSH e colar este comando único:
 
 ```bash
-# 1. Acesse sua VPS Hostinger via SSH:
-ssh root@SEU_IP_HOSTINGER
-
-# 2. Clone o repositório (ou acesse a pasta do projeto):
-git clone <URL_DO_SEU_REPOSITORIO> app
-cd app/blog-app
-
-# 3. Execute o instalador automático:
-chmod +x install-coolify.sh
-./install-coolify.sh
+curl -fsSL https://raw.githubusercontent.com/Mercattatech/Blog-Mercatta-Growth/main/install-coolify.sh | bash
 ```
 
-### O que o instalador faz automaticamente:
-1. Verifica se o Docker e o Docker Compose estão instalados (e instala se não estiverem).
-2. Gera chaves criptográficas seguras de 64 caracteres para o `AUTH_SECRET` (JWT).
-3. Gera senha aleatória forte para o PostgreSQL.
-4. Cria o arquivo `.env` de produção completo.
-5. Constrói o container multi-stage otimizado do Next.js e sobe o PostgreSQL com volumes persistentes.
-6. Executa as migrações do banco e popula os tenants iniciais e o Super Admin.
-7. Exibe a URL de acesso e as credenciais prontas na sua tela!
+> **Dica:** Se você já possui uma URL do PostgreSQL pronta (do Coolify, Neon ou Supabase), pode passar no mesmo comando:
+> ```bash
+> DATABASE_URL="postgresql://usuario:senha@host:5432/banco" curl -fsSL https://raw.githubusercontent.com/Mercattatech/Blog-Mercatta-Growth/main/install-coolify.sh | bash
+> ```
+
+### O que o instalador faz sozinho:
+1. Clona/atualiza automaticamente o repositório oficial.
+2. Instala Docker e Docker Compose caso não estejam na VPS.
+3. Gera senhas criptográficas e seguras para `AUTH_SECRET` e `POSTGRES_PASSWORD`.
+4. Constrói a imagem Docker de produção (Next.js 16 Multi-stage).
+5. Sobe o container da aplicação e do PostgreSQL com migrações automáticas.
+6. Mostra na tela a URL pública pronta, os dados de login e as credenciais de Super Admin.
 
 ---
 
-## 🌐 Opção 2: Deploy Direto pelo Painel Web do Coolify
+## 🌐 2. Deploy pelo Painel Web do Coolify
 
-Se você já tem o **Coolify** rodando na Hostinger:
+Se você prefere gerenciar tudo visualmente pela interface web do Coolify:
 
-### Passo 1: Criar o Banco PostgreSQL no Coolify
-1. No painel do Coolify, clique em **+ Create Resource**.
+### Passo 1: Criar o Banco de Dados PostgreSQL no Coolify
+1. No painel do Coolify, clique em **+ New Resource**.
 2. Selecione **Databases** -> **PostgreSQL**.
-3. Defina o nome do banco como `mercatta_blog`.
-4. Clique em **Deploy**. O Coolify gerará a string de conexão (Internal URL), por exemplo:
-   `postgresql://postgres:SENHA@postgres:5432/mercatta_blog`
+3. Escolha o nome `mercatta_blog`.
+4. Clique em **Deploy**.
+5. Na aba de configurações do banco, copie a **Internal Connection String**, por exemplo:
+   `postgresql://postgres:sua_senha@postgres:5432/mercatta_blog`
 
 ### Passo 2: Criar a Aplicação Next.js no Coolify
-1. No Coolify, clique em **+ Create Resource** -> **Application**.
-2. Escolha **Public / Private Repository** (GitHub / GitLab) e aponte para o seu repositório.
-3. Defina o **Base Directory** como: `/blog-app`
-4. Em **Build Pack**, selecione **Dockerfile** (o arquivo `blog-app/Dockerfile` já está pronto e otimizado).
-5. Defina a porta de exposição como: `3000`.
+1. No Coolify, clique em **+ New Resource** -> **Application**.
+2. Escolha **Public Repository** e cole:
+   `https://github.com/Mercattatech/Blog-Mercatta-Growth.git`
+3. **Branch:** `main`
+4. **Base Directory:** `/` *(deixe na raiz)*
+5. **Build Pack:** Selecione **Dockerfile** *(ele usará o Dockerfile otimizado do repositório)*
+6. **Port:** `3000`
 
-### Passo 3: Configurar as Variáveis de Ambiente no Coolify
-Na aba **Environment Variables** da aplicação no Coolify, adicione:
+### Passo 3: Adicionar as Variáveis de Ambiente no Coolify
+Na aba **Environment Variables** da aplicação, adicione:
 
-| Variável | Valor Recomendado | Descrição |
+| Variável | Valor Recomendado | Finalidade |
 |---|---|---|
-| `NODE_ENV` | `production` | Ambiente de produção |
-| `PORT` | `3000` | Porta padrão do container |
-| `SITE_URL` | `https://grupomercatta.com.br` | URL principal do seu domínio |
-| `DATABASE_URL` | `postgresql://...` | A URL do Postgres gerada no Passo 1 |
-| `AUTH_SECRET` | *(Chave de 64 caracteres)* | Gere com `openssl rand -hex 32` |
-| `GEMINI_API_KEY` | *(Sua chave Gemini)* | Obtenha em https://aistudio.google.com/apikey |
-| `GEMINI_MODEL` | `gemini-flash-latest` | Modelo de IA de alta velocidade |
-| `SUPERADMIN_EMAIL`| `admin@grupomercatta.com.br` | E-mail do Super Admin |
+| `NODE_ENV` | `production` | Modo de produção do Next.js |
+| `PORT` | `3000` | Porta padrão da aplicação |
+| `SITE_URL` | `https://grupomercatta.com.br` | Seu domínio principal |
+| `DATABASE_URL` | *(Cole a Internal URL do Postgres gerada no Passo 1)* | Conexão com o banco |
+| `AUTH_SECRET` | *(Chave segura de 64 caracteres)* | Criptografia de sessões |
+| `GEMINI_API_KEY` | *(Sua chave Gemini)* | Geração de artigos e imagens com IA |
+| `GEMINI_MODEL` | `gemini-flash-latest` | Modelo de IA de alta performance |
+| `SUPERADMIN_EMAIL` | `admin@grupomercatta.com.br` | Acesso de Super Admin |
 | `SUPERADMIN_NAME` | `Mercatta Super Admin` | Nome do Super Administrador |
-| `MERCATTA_DOMAIN` | `grupomercatta.com.br` | Domínio base multi-tenant |
+| `MERCATTA_DOMAIN` | `grupomercatta.com.br` | Domínio master do SaaS |
 
-6. Clique em **Deploy** no topo do Coolify!
+> 🔑 **Para gerar um AUTH_SECRET rápido no terminal:**
+> `openssl rand -hex 32`
+
+7. Clique em **Deploy** no topo do Coolify! O Coolify gerará o certificado SSL automático (Let's Encrypt) e conectará com o seu domínio.
 
 ---
 
@@ -74,8 +75,8 @@ Na aba **Environment Variables** da aplicação no Coolify, adicione:
 
 Após a inicialização do banco, os usuários são criados automaticamente:
 
-- **Super Administrador (Acesso Global a todos os Tenants, WhatsApp Flow e MCP):**
-  - **URL:** `https://seu-dominio.com/admin/login/`
+- **Super Administrador (Acesso Geral a todos os Tenants, WhatsApp Flow, Configurações e MCP):**
+  - **URL do Login:** `http://SEU_IP:3000/admin/login/` ou `https://seu-dominio.com/admin/login/`
   - **E-mail:** `admin@grupomercatta.com.br`
   - **Senha inicial:** `admin123`
 
@@ -83,11 +84,11 @@ Após a inicialização do banco, os usuários são criados automaticamente:
   - **E-mail:** `admin@braziw.com.br`
   - **Senha inicial:** `admin123`
 
-*(Lembre-se de alterar as senhas no menu Perfil após o primeiro acesso).*
+*(Altere as senhas no menu Perfil após o primeiro acesso).*
 
 ---
 
-## 🛠️ Comandos Úteis na VPS
+## 🛠️ Comandos de Manutenção na VPS
 
 ```bash
 # Ver status dos containers
@@ -96,12 +97,9 @@ docker compose ps
 # Acompanhar logs em tempo real
 docker compose logs -f app
 
-# Reiniciar containers
+# Reiniciar aplicação
 docker compose restart
 
-# Parar tudo
-docker compose down
-
-# Recarregar com nova versão
-git pull && docker compose up -d --build
+# Atualizar para a versão mais recente do GitHub
+git pull origin main && docker compose up -d --build
 ```

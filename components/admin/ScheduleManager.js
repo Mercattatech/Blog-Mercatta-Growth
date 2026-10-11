@@ -448,7 +448,15 @@ export default function ScheduleManager({ user, tenant: initialTenant, initialCo
               <input
                 type="date"
                 className="a-input"
-                value={(config.start_date || '').slice(0, 10)}
+                value={
+                  config.start_date
+                    ? (typeof config.start_date === 'string'
+                        ? config.start_date.slice(0, 10)
+                        : config.start_date instanceof Date
+                          ? config.start_date.toISOString().slice(0, 10)
+                          : String(config.start_date).slice(0, 10))
+                    : ''
+                }
                 onChange={(e) => setConfig({ ...config, start_date: e.target.value })}
               />
             </div>
