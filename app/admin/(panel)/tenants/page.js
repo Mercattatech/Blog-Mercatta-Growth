@@ -1,5 +1,5 @@
 import { requireUser } from '@/lib/guard.js';
-import { listTenants } from '@/lib/tenant.js';
+import { listTenants, getMainNewsTenant } from '@/lib/tenant.js';
 import { TenantsManager } from './TenantsManager.js';
 
 export const dynamic = 'force-dynamic';
@@ -11,5 +11,6 @@ export const metadata = {
 export default async function TenantsPage() {
   await requireUser({ superadmin: true });
   const tenants = await listTenants();
-  return <TenantsManager initialTenants={tenants} />;
+  const mainNewsTenant = await getMainNewsTenant();
+  return <TenantsManager initialTenants={tenants} initialMainTenantId={mainNewsTenant?.id || null} />;
 }

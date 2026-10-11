@@ -2,8 +2,14 @@
 import { useState, useRef } from 'react';
 import { api, toast, useBusy, Icon } from '@/components/admin/ui.js';
 
-export function TenantsManager({ initialTenants = [] }) {
+export function TenantsManager({ initialTenants = [], initialMainTenantId = null }) {
   const [tenants, setTenants] = useState(initialTenants);
+  const [mainTenantId, setMainTenantId] = useState(
+    initialMainTenantId ||
+    (initialTenants.find((t) => t.custom_domain === 'news.grupomercatta.com.br')?.id) ||
+    initialTenants[0]?.id
+  );
+  const [savingMainDomain, setSavingMainDomain] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTenant, setEditingTenant] = useState(null);
   const [dnsResult, setDnsResult] = useState(null);
@@ -12,6 +18,31 @@ export function TenantsManager({ initialTenants = [] }) {
   const logoFileRef = useRef(null);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
   const faviconFileRef = useRef(null);
+
+  const handleSetMainTenant = async (targetId) => {
+    const target = tenants.find((t) => t.id === Number(targetId));
+    if (!target) return;
+    if (target.id === mainTenantId) {
+      toast(`A empresa "${target.name}" já está ativa no news.grupomercatta.com.br.`);
+      return;
+    }
+    if (!window.confirm(`Deseja ativar a empresa "${target.name}" no domínio principal (news.grupomercatta.com.br)?\n\nTodos os acessos a news.grupomercatta.com.br passarão a carregar os artigos e a marca desta empresa.`)) {
+      return;
+    }
+    setSavingMainDomain(true);
+    try {
+      await api('/api/admin/tenants/main-domain/', {
+        method: 'POST',
+        data: { tenant_id: target.id },
+      });
+      setMainTenantId(target.id);
+      toast(`Empresa "${target.name}" agora está ATIVA no news.grupomercatta.com.br!`);
+    } catch (err) {
+      toast(err.message || 'Erro ao definir empresa principal.', 'err');
+    } finally {
+      setSavingMainDomain(false);
+    }
+  };
 
   // Formulário de Nova Empresa / Edição
   const [form, setForm] = useState({
@@ -356,6 +387,76 @@ export function TenantsManager({ initialTenants = [] }) {
         </div>
       </div>
 
+      {/* Banner de Controle do Domínio Principal news.grupomercatta.com.br */}
+      {(() => {
+        const activeMainTenant = tenants.find((t) => t.id === mainTenantId) || tenants[0];
+        return (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.22) 0%, rgba(15, 23, 42, 0.65) 100%)',
+            border: '1px solid rgba(59, 130, 246, 0.35)',
+            borderRadius: 14,
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.75rem',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.25rem', flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '1.35rem' }}>⭐</span>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, margin: 0, color: '#fff' }}>
+                    Empresa Ativa no Domínio Principal
+                  </h3>
+                  <code style={{
+                    background: 'rgba(59, 130, 246, 0.25)',
+                    color: '#60a5fa',
+                    padding: '2px 10px',
+                    borderRadius: 6,
+                    fontWeight: 800,
+                    fontSize: '0.875rem',
+                    border: '1px solid rgba(59, 130, 246, 0.4)',
+                  }}>
+                    news.grupomercatta.com.br
+                  </code>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.8375rem', color: 'var(--muted)', maxWidth: 640 }}>
+                  Como Super Administrador, escolha qual empresa deve ser aberta ao acessar o link principal. Você pode alternar entre as empresas a qualquer momento.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 600 }}>Ativar:</span>
+                  <select
+                    className="a-input"
+                    style={{ width: 'auto', minWidth: 220, padding: '0.45rem 0.75rem', fontSize: '0.875rem' }}
+                    value={mainTenantId || ''}
+                    onChange={(e) => handleSetMainTenant(Number(e.target.value))}
+                    disabled={savingMainDomain}
+                  >
+                    {tenants.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name} ({t.slug}) {t.id === mainTenantId ? '★ Ativa' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {activeMainTenant && (
+                  <a
+                    href={activeMainTenant.id === mainTenantId ? '/' : `/?tenant=${activeMainTenant.slug}`}
+                    target="_blank"
+                    rel="noopener"
+                    className="a-btn ghost sm"
+                    style={{ borderColor: '#3b82f6', color: '#60a5fa' }}
+                  >
+                    <Icon name="globe" size={15} /> Ver no ar
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Tenants Table */}
       <div style={{ background: 'var(--surface)', borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden' }}>
         <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -378,7 +479,7 @@ export function TenantsManager({ initialTenants = [] }) {
               {tenants.map((t) => {
                 const isMercatta = t.slug === 'mercatta';
                 const isBraziw = t.slug === 'braziw';
-                const hasCustomDomain = Boolean(t.custom_domain);
+                const isMainTenant = t.id === mainTenantId;
 
                 return (
                   <tr key={t.id} style={{ borderBottom: '1px solid var(--border)' }}>
@@ -426,7 +527,7 @@ export function TenantsManager({ initialTenants = [] }) {
 
                     {/* Domínio & DNS */}
                     <td style={{ padding: '1rem' }}>
-                      {t.slug === 'mercatta' ? (
+                      {isMainTenant ? (
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                             <span style={{ fontWeight: 700, color: '#60a5fa' }}>news.grupomercatta.com.br</span>
@@ -435,14 +536,20 @@ export function TenantsManager({ initialTenants = [] }) {
                             display: 'inline-block',
                             fontSize: '0.7rem',
                             marginTop: '0.2rem',
-                            padding: '0.1rem 0.4rem',
+                            padding: '0.15rem 0.5rem',
                             borderRadius: 4,
-                            background: 'rgba(59, 130, 246, 0.15)',
-                            color: '#60a5fa',
+                            background: 'rgba(16, 185, 129, 0.2)',
+                            color: '#34d399',
                             fontWeight: 700,
+                            border: '1px solid rgba(16, 185, 129, 0.4)',
                           }}>
-                            ★ Domínio Principal
+                            ★ Ativo no news.grupomercatta.com.br
                           </span>
+                          {t.custom_domain && (
+                            <div style={{ marginTop: '0.25rem', fontSize: '0.72rem', color: 'var(--muted)' }}>
+                              Domínio próprio: <span style={{ color: '#93c5fd' }}>{t.custom_domain}</span>
+                            </div>
+                          )}
                         </div>
                       ) : hasCustomDomain ? (
                         <div>
@@ -550,7 +657,7 @@ export function TenantsManager({ initialTenants = [] }) {
                         </button>
 
                         <a
-                          href={t.slug === 'mercatta' ? '/' : `/?tenant=${t.slug}`}
+                          href={isMainTenant ? '/' : (t.custom_domain && t.domain_verified ? `https://${t.custom_domain}/` : `/?tenant=${t.slug}`)}
                           target="_blank"
                           rel="noopener"
                           className="a-btn ghost sm"
@@ -559,6 +666,45 @@ export function TenantsManager({ initialTenants = [] }) {
                         >
                           <Icon name="globe" size={15} /> Ver Blog
                         </a>
+
+                        {isMainTenant ? (
+                          <span
+                            title="Esta empresa está ativa no domínio news.grupomercatta.com.br"
+                            style={{
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              color: '#34d399',
+                              background: 'rgba(16, 185, 129, 0.15)',
+                              border: '1px solid rgba(16, 185, 129, 0.35)',
+                              padding: '0.3rem 0.55rem',
+                              borderRadius: 6,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            ✓ Ativo no news
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="a-btn ghost sm"
+                            onClick={() => handleSetMainTenant(t.id)}
+                            disabled={savingMainDomain}
+                            title="Ativar esta empresa no domínio principal news.grupomercatta.com.br"
+                            style={{
+                              padding: '0.3rem 0.6rem',
+                              color: '#60a5fa',
+                              borderColor: 'rgba(59, 130, 246, 0.4)',
+                              fontWeight: 600,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            🎯 Ativar no news
+                          </button>
+                        )}
 
                         <a
                           href={`/admin/whatsapp-flow/?tenant_id=${t.id}`}
@@ -788,7 +934,33 @@ export function TenantsManager({ initialTenants = [] }) {
                     placeholder="ex: blog.cliente.com.br"
                     style={{ width: '100%', padding: '0.65rem', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg)', color: 'inherit' }}
                   />
-                  <small style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>O cliente aponta CNAME para seu servidor</small>
+                  <small style={{ color: 'var(--muted)', fontSize: '0.75rem', display: 'block' }}>O cliente aponta CNAME para seu servidor</small>
+                  {editingTenant && (
+                    <div style={{ marginTop: '0.35rem' }}>
+                      {editingTenant.id === mainTenantId ? (
+                        <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700 }}>
+                          ★ Esta empresa está ATIVA em news.grupomercatta.com.br
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleSetMainTenant(editingTenant.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            color: '#3b82f6',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            textDecoration: 'underline',
+                            fontWeight: 600,
+                          }}
+                        >
+                          🎯 Ativar esta empresa em news.grupomercatta.com.br
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div>
