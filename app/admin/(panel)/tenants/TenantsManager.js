@@ -483,6 +483,7 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
                 const isMercatta = t.slug === 'mercatta';
                 const isBraziw = t.slug === 'braziw';
                 const isMainTenant = t.id === mainTenantId;
+                const hasCustomDomain = Boolean(t.custom_domain && String(t.custom_domain).trim());
 
                 return (
                   <tr key={t.id} style={{ borderBottom: '1px solid var(--border)' }}>
