@@ -4,7 +4,10 @@
 # -------------------------------------------------------------
 FROM node:20-alpine AS base
 
-RUN apk add --no-cache libc6-compat curl
+# Fontes são obrigatórias: o sharp (librsvg) usa as fontes do sistema para desenhar
+# o texto das capas. Sem elas, o texto sai como quadradinhos (□□□).
+RUN apk add --no-cache libc6-compat curl fontconfig ttf-dejavu ttf-liberation font-noto \
+    && fc-cache -f
 WORKDIR /app
 
 # 1. Dependências

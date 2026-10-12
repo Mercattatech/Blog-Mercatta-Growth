@@ -4,7 +4,7 @@ import { Card, CtaBanner, Cover, Pill, Sidebar, bgStyle } from '@/components/Par
 import { getAdjacent, getPostBySlug, getRelated } from '@/lib/posts';
 import { MAIN_SITE, extractToc, fdate, isoDay, siteUrl, trunc } from '@/lib/content';
 import { getCurrentTenant } from '@/lib/currentTenant';
-import { getTenantById } from '@/lib/tenant';
+import { getTenantById, fixBrandLinks } from '@/lib/tenant';
 import { getUser } from '@/lib/auth';
 import { SuspendedBlogScreen } from '@/components/SuspendedBlogScreen';
 
@@ -146,7 +146,7 @@ export default async function Page({ params }) {
                 <ol>{toc.map((t) => <li key={t.id} className={`toc-${t.level}`}><a href={`#${t.id}`}>{t.text}</a></li>)}</ol>
               </details>
             )}
-            <div className="prose" id="prose" dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div className="prose" id="prose" dangerouslySetInnerHTML={{ __html: fixBrandLinks(post.content, effectiveTenant) }} />
             {faq.length > 0 && (
               <section className="faq" aria-labelledby="faq-title">
                 <h2 id="faq-title">Perguntas frequentes</h2>

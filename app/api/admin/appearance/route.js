@@ -44,6 +44,7 @@ export async function PATCH(req) {
       theme_config: body.theme_config,
       whatsapp: body.whatsapp,
       contact_email: body.contact_email,
+      website_url: body.website_url,
     });
     return NextResponse.json({ ok: true, tenant: updated });
   } catch (err) {

@@ -63,6 +63,7 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
     site_description: '',
     contact_email: '',
     whatsapp: '',
+    website_url: '',
     ai_posts_limit_month: '30',
     has_whatsapp_flow: false,
     admin_name: '',
@@ -144,6 +145,7 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
       site_description: '',
       contact_email: '',
       whatsapp: '',
+      website_url: '',
       ai_posts_limit_month: '30',
       has_whatsapp_flow: false,
       status: 'active',
@@ -175,6 +177,7 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
       site_description: t.site_description || '',
       contact_email: t.contact_email || '',
       whatsapp: t.whatsapp || '',
+      website_url: t.website_url || '',
       ai_posts_limit_month: String(t.ai_posts_limit_month || 30),
       has_whatsapp_flow: Boolean(t.has_whatsapp_flow),
       admin_name: '',
@@ -1327,6 +1330,22 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
                     value={form.whatsapp}
                     onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
                     placeholder="Ex: 11987654321"
+                    style={{ width: '100%', padding: '0.55rem', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg)', color: 'inherit' }}
+                  />
+                </div>
+
+                {/* Site oficial da empresa */}
+                <div style={{ marginTop: '1rem' }}>
+                  <label htmlFor="tenant-website-url" style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.35rem' }}>
+                    Site oficial da empresa (usado nos links e CTAs dos artigos)
+                  </label>
+                  <input
+                    id="tenant-website-url"
+                    type="text"
+                    inputMode="url"
+                    value={form.website_url}
+                    onChange={(e) => setForm({ ...form, website_url: e.target.value })}
+                    placeholder="Ex: https://www.empresa.com.br"
                     style={{ width: '100%', padding: '0.55rem', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg)', color: 'inherit' }}
                   />
                 </div>

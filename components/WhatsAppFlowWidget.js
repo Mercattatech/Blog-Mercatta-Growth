@@ -10,6 +10,12 @@ export default function WhatsAppFlowWidget({ tenant, flowConfig }) {
   const [errorMsg, setErrorMsg] = useState('');
   const inputRef = useRef(null);
 
+  useEffect(() => {
+    if (open && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 150);
+    }
+  }, [open, step]);
+
   if (!flowConfig || !flowConfig.active) return null;
 
   const questions = flowConfig.questions || [];
@@ -17,12 +23,6 @@ export default function WhatsAppFlowWidget({ tenant, flowConfig }) {
 
   const currentQ = questions[step] || null;
   const isLast = step === questions.length - 1;
-
-  useEffect(() => {
-    if (open && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 150);
-    }
-  }, [open, step]);
 
   const handleNext = async (e) => {
     e.preventDefault();

@@ -1509,6 +1509,7 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
     favicon_url: initialTenant?.favicon_url || '',
     whatsapp: initialTenant?.whatsapp || '',
     contact_email: initialTenant?.contact_email || '',
+    website_url: initialTenant?.website_url || '',
   });
 
   const [theme, setTheme] = useState({
@@ -2936,6 +2937,19 @@ export function AppearanceForm({ initialTenant, allTenants = [], isSuperAdmin = 
                     placeholder="ex: Fale Conosco"
                   />
                   <small style={{ color: 'var(--muted)', fontSize: '0.72rem' }}>Botão de contato localizado no canto direito do topo</small>
+                </div>
+
+                <div className="a-field" style={{ margin: 0 }}>
+                  <label htmlFor="appearance-website-url" style={{ fontSize: '0.825rem', fontWeight: 700 }}>Site Oficial da Empresa</label>
+                  <input
+                    id="appearance-website-url"
+                    className="a-input"
+                    inputMode="url"
+                    value={generalForm.website_url || ''}
+                    onChange={(e) => setGeneralForm((prev) => ({ ...prev, website_url: e.target.value }))}
+                    placeholder="ex: https://www.empresa.com.br"
+                  />
+                  <small style={{ color: 'var(--muted)', fontSize: '0.72rem' }}>Destino dos links e CTAs criados nos artigos pela IA</small>
                 </div>
               </div>
             </div>

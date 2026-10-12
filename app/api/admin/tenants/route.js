@@ -37,6 +37,7 @@ export async function POST(req) {
     site_description,
     contact_email,
     whatsapp,
+    website_url,
     ai_posts_limit_month,
     has_whatsapp_flow,
     admin_name,
@@ -65,6 +66,7 @@ export async function POST(req) {
       site_description,
       contact_email,
       whatsapp,
+      website_url,
       ai_posts_limit_month,
       has_whatsapp_flow,
     });

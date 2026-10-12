@@ -2,6 +2,8 @@ import Script from 'next/script';
 import { getCategories } from '@/lib/posts';
 import { CAT_ICONS, MAIN_SITE } from '@/lib/content';
 import { getCurrentTenant } from '@/lib/currentTenant';
+import { getTenantWebsite } from '@/lib/tenant';
+import { DEFAULT_FLOW_CONFIG } from '@/lib/whatsappFlow';
 import WhatsAppFlowWidget from '@/components/WhatsAppFlowWidget';
 
 export async function Shell({ active = '', tenant: passedTenant = null, children }) {
@@ -76,9 +78,10 @@ export async function Shell({ active = '', tenant: passedTenant = null, children
   const siteTitle = theme.header_title_text || (theme.header_title && !theme.header_title.startsWith('#') ? theme.header_title : null) || (tenant.slug === 'wisemadness' ? 'WiseMadness' : (tenant.site_title || tenant.name));
   const tagline = theme.header_tagline_text !== undefined ? theme.header_tagline_text : (theme.header_tagline !== undefined && !theme.header_tagline.startsWith('#') ? theme.header_tagline : (tenant.site_tagline || 'Blog Oficial'));
   const logoUrl = tenant.logo_url || (tenant.slug === 'braziw' ? '/img/logo.png' : null);
+  const companySite = getTenantWebsite(tenant);
   const contactHref = tenant.whatsapp
     ? `https://wa.me/${tenant.whatsapp.replace(/\D/g, '')}`
-    : (tenant.slug === 'braziw' ? MAIN_SITE : (tenant.contact_email ? `mailto:${tenant.contact_email}` : '#'));
+    : (companySite || (tenant.contact_email ? `mailto:${tenant.contact_email}` : '#'));
   const contactLabel = theme.header_contact_text || (tenant.slug === 'braziw' ? 'Conheça a Braziw' : 'Fale Conosco');
   const description = tenant.site_description || `Artigos e novidades oficiais da ${tenant.name}.`;
 
@@ -209,14 +212,26 @@ export async function Shell({ active = '', tenant: passedTenant = null, children
   const searchHref = `/busca/${tenantQuery}`;
 
   let flowConfig = null;
-  if (tenant.has_whatsapp_flow && tenant.whatsapp_flow_config) {
+  if (tenant.has_whatsapp_flow) {
+    let saved = {};
     try {
-      flowConfig = typeof tenant.whatsapp_flow_config === 'string'
-        ? JSON.parse(tenant.whatsapp_flow_config)
-        : tenant.whatsapp_flow_config;
+      saved = typeof tenant.whatsapp_flow_config === 'string'
+        ? JSON.parse(tenant.whatsapp_flow_config || '{}')
+        : (tenant.whatsapp_flow_config || {});
     } catch {
-      flowConfig = null;
+      saved = {};
     }
+    // Recurso liberado mas nunca configurado ({}): exibe com a configuração padrão.
+    // Só fica oculto se o admin desativar explicitamente (active === false).
+    const neverConfigured = !saved || saved.active === undefined;
+    flowConfig = {
+      ...DEFAULT_FLOW_CONFIG,
+      ...saved,
+      active: neverConfigured ? true : Boolean(saved.active),
+      questions: Array.isArray(saved?.questions) && saved.questions.length
+        ? saved.questions
+        : DEFAULT_FLOW_CONFIG.questions,
+    };
   }
 
   return (
