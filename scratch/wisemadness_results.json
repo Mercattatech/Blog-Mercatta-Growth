@@ -1,0 +1,550 @@
+{
+  "0": {
+    "ok": true,
+    "title": "Wise Madness: a história da instituição que transforma vidas em Bauru desde 2006",
+    "article": {
+      "id": 233,
+      "slug": "ong-em-bauru-wise-madness-historia",
+      "status": "published"
+    }
+  },
+  "1": {
+    "ok": true,
+    "title": "Missão, visão e valores da Associação Wise Madness",
+    "article": {
+      "id": 234,
+      "slug": "missao-visao-valores-associacao-wise-madness",
+      "status": "published",
+      "url": "/missao-visao-valores-associacao-wise-madness/"
+    },
+    "secs": 105
+  },
+  "2": {
+    "ok": true,
+    "title": "Como funciona uma OSC: entenda o trabalho da Wise Madness",
+    "article": {
+      "id": 235,
+      "slug": "como-funciona-uma-osc-wise-madness",
+      "status": "published",
+      "url": "/como-funciona-uma-osc-wise-madness/"
+    },
+    "secs": 139
+  },
+  "3": {
+    "ok": true,
+    "title": "Transparência: como a Wise Madness aplica cada doação recebida",
+    "article": {
+      "id": 236,
+      "slug": "transparencia-como-a-wise-madness-aplica-doacoes",
+      "status": "published",
+      "url": "/transparencia-como-a-wise-madness-aplica-doacoes/"
+    },
+    "secs": 169
+  },
+  "4": {
+    "ok": true,
+    "title": "Os bairros onde a Wise Madness atua e por que estar perto faz diferença",
+    "article": {
+      "id": 237,
+      "slug": "projeto-social-periferia-bauru-bairros-atendidos",
+      "status": "published",
+      "url": "/projeto-social-periferia-bauru-bairros-atendidos/"
+    },
+    "secs": 164
+  },
+  "5": {
+    "ok": true,
+    "title": "Um dia na Wise Madness: a rotina das crianças no contraturno",
+    "article": {
+      "id": 238,
+      "slug": "rotina-contraturno-escolar-wise-madness",
+      "status": "published",
+      "url": "/rotina-contraturno-escolar-wise-madness/"
+    },
+    "secs": 114
+  },
+  "6": {
+    "ok": true,
+    "title": "O que é o Serviço de Convivência e Fortalecimento de Vínculos (SCFV)",
+    "article": {
+      "id": 239,
+      "slug": "o-que-e-servico-de-convivencia-e-fortalecimento-de-vinculos",
+      "status": "published",
+      "url": "/o-que-e-servico-de-convivencia-e-fortalecimento-de-vinculos/"
+    },
+    "secs": 289
+  },
+  "7": {
+    "ok": true,
+    "title": "Contraturno escolar: benefícios para crianças e adolescentes",
+    "article": {
+      "id": 240,
+      "slug": "contraturno-escolar-beneficios",
+      "status": "published",
+      "url": "/contraturno-escolar-beneficios/"
+    },
+    "secs": 100
+  },
+  "8": {
+    "ok": true,
+    "title": "Como as atividades lúdicas ajudam no desenvolvimento infantil",
+    "article": {
+      "id": 241,
+      "slug": "atividades-ludicas-desenvolvimento-infantil",
+      "status": "published",
+      "url": "/atividades-ludicas-desenvolvimento-infantil/"
+    },
+    "secs": 185
+  },
+  "9": {
+    "ok": true,
+    "title": "Esporte como ferramenta de inclusão social",
+    "article": {
+      "id": 242,
+      "slug": "esporte-e-inclusao-social",
+      "status": "published",
+      "url": "/esporte-e-inclusao-social/"
+    },
+    "secs": 134
+  },
+  "10": {
+    "ok": true,
+    "title": "A importância da família no desenvolvimento de crianças em vulnerabilidade",
+    "article": {
+      "id": 243,
+      "slug": "familia-e-vulnerabilidade-social-desenvolvimento",
+      "status": "published",
+      "url": "/familia-e-vulnerabilidade-social-desenvolvimento/"
+    },
+    "secs": 130
+  },
+  "11": {
+    "ok": true,
+    "title": "Como inscrever uma criança em projetos sociais em Bauru",
+    "article": {
+      "id": 244,
+      "slug": "como-inscrever-crianca-projetos-sociais-bauru",
+      "status": "published",
+      "url": "/como-inscrever-crianca-projetos-sociais-bauru/"
+    },
+    "secs": 113
+  },
+  "12": {
+    "ok": true,
+    "title": "O que é acolhimento institucional e quando ele acontece",
+    "article": {
+      "id": 245,
+      "slug": "o-que-e-acolhimento-institucional-e-quando-acontece",
+      "status": "published",
+      "url": "/o-que-e-acolhimento-institucional-e-quando-acontece/"
+    },
+    "secs": 151
+  },
+  "13": {
+    "ok": true,
+    "title": "Casa de acolhimento: como é a rotina e o cuidado com cada criança",
+    "article": {
+      "id": 246,
+      "slug": "casa-de-acolhimento-rotina-e-cuidado",
+      "status": "published",
+      "url": "/casa-de-acolhimento-rotina-e-cuidado/"
+    },
+    "secs": 89
+  },
+  "14": {
+    "ok": true,
+    "title": "ECA: os direitos de crianças e adolescentes acolhidos",
+    "article": {
+      "id": 247,
+      "slug": "eca-direitos-criancas-adolescentes-acolhidos",
+      "status": "published",
+      "url": "/eca-direitos-criancas-adolescentes-acolhidos/"
+    },
+    "secs": 112
+  },
+  "15": {
+    "ok": true,
+    "title": "Reintegração familiar: o objetivo principal do acolhimento",
+    "article": {
+      "id": 248,
+      "slug": "reintegracao-familiar-objetivo-principal-do-acolhimento",
+      "status": "published",
+      "url": "/reintegracao-familiar-objetivo-principal-do-acolhimento/"
+    },
+    "secs": 96
+  },
+  "16": {
+    "ok": true,
+    "title": "Adoção x acolhimento: entenda a diferença",
+    "article": {
+      "id": 249,
+      "slug": "adocao-x-acolhimento-entenda-a-diferenca",
+      "status": "published",
+      "url": "/adocao-x-acolhimento-entenda-a-diferenca/"
+    },
+    "secs": 121
+  },
+  "17": {
+    "ok": true,
+    "title": "Como ajudar crianças em casas de acolhimento",
+    "article": {
+      "id": 250,
+      "slug": "como-ajudar-casa-de-acolhimento",
+      "status": "published",
+      "url": "/como-ajudar-casa-de-acolhimento/"
+    },
+    "secs": 92
+  },
+  "18": {
+    "ok": true,
+    "title": "Impactar com Arte: o projeto cultural da Wise Madness",
+    "article": {
+      "id": 251,
+      "slug": "projeto-impactar-com-arte-wise-madness",
+      "status": "published",
+      "url": "/projeto-impactar-com-arte-wise-madness/"
+    },
+    "secs": 166
+  },
+  "19": {
+    "ok": true,
+    "title": "Breaking nas periferias: dança que transforma jovens",
+    "article": {
+      "id": 252,
+      "slug": "breaking-nas-periferias-danca-que-transforma-jovens",
+      "status": "published",
+      "url": "/breaking-nas-periferias-danca-que-transforma-jovens/"
+    },
+    "secs": 160
+  },
+  "20": {
+    "ok": true,
+    "title": "Street dance para crianças: benefícios físicos e emocionais",
+    "article": {
+      "id": 253,
+      "slug": "street-dance-para-criancas-beneficios-fisicos-e-emocionais",
+      "status": "published",
+      "url": "/street-dance-para-criancas-beneficios-fisicos-e-emocionais/"
+    },
+    "secs": 101
+  },
+  "21": {
+    "ok": true,
+    "title": "Percussão como ferramenta educativa e de disciplina",
+    "article": {
+      "id": 254,
+      "slug": "percussao-ferramenta-educativa-disciplina",
+      "status": "published",
+      "url": "/percussao-ferramenta-educativa-disciplina/"
+    },
+    "secs": 116
+  },
+  "22": {
+    "ok": true,
+    "title": "Malabares e artes circenses: concentração, coordenação e confiança",
+    "article": {
+      "id": 255,
+      "slug": "oficina-de-malabares-artes-circenses",
+      "status": "published",
+      "url": "/oficina-de-malabares-artes-circenses/"
+    },
+    "secs": 94
+  },
+  "23": {
+    "ok": true,
+    "title": "MC e rima: a palavra como forma de expressão para jovens",
+    "article": {
+      "id": 256,
+      "slug": "mc-e-rima-forma-de-expressao-para-jovens",
+      "status": "published",
+      "url": "/mc-e-rima-forma-de-expressao-para-jovens/"
+    },
+    "secs": 71
+  },
+  "24": {
+    "ok": true,
+    "title": "Dança contemporânea em projetos sociais",
+    "article": {
+      "id": 257,
+      "slug": "danca-contemporanea-em-projetos-sociais",
+      "status": "published",
+      "url": "/danca-contemporanea-em-projetos-sociais/"
+    },
+    "secs": 113
+  },
+  "25": {
+    "ok": true,
+    "title": "Wise Way: a história das danças urbanas na Wise Madness",
+    "article": {
+      "id": 258,
+      "slug": "wise-way-danca-urbana-historico",
+      "status": "published",
+      "url": "/wise-way-danca-urbana-historico/"
+    },
+    "secs": 191
+  },
+  "26": {
+    "ok": true,
+    "title": "Espetáculos nas escolas públicas: arte que circula pela cidade",
+    "article": {
+      "id": 259,
+      "slug": "espetaculos-escolas-publicas-arte-que-circula-pela-cidade",
+      "status": "published",
+      "url": "/espetaculos-escolas-publicas-arte-que-circula-pela-cidade/"
+    },
+    "secs": 59
+  },
+  "27": {
+    "ok": true,
+    "title": "Cultura hip hop: história, pilares e impacto social",
+    "article": {
+      "id": 260,
+      "slug": "cultura-hip-hop-historia-pilares-e-impacto-social",
+      "status": "published",
+      "url": "/cultura-hip-hop-historia-pilares-e-impacto-social/"
+    },
+    "secs": 80
+  },
+  "28": {
+    "ok": true,
+    "title": "Oficinas culturais gratuitas em Bauru: como participar",
+    "article": {
+      "id": 261,
+      "slug": "oficinas-culturais-gratuitas-bauru",
+      "status": "published",
+      "url": "/oficinas-culturais-gratuitas-bauru/"
+    },
+    "secs": 77
+  },
+  "29": {
+    "ok": true,
+    "title": "Como doar para a Wise Madness: guia completo",
+    "article": {
+      "id": 262,
+      "slug": "como-doar-para-ong-guia-completo",
+      "status": "published",
+      "url": "/como-doar-para-ong-guia-completo/"
+    },
+    "secs": 111
+  },
+  "30": {
+    "ok": true,
+    "title": "Doação recorrente: por que pequenas contribuições mensais fazem diferença",
+    "article": {
+      "id": 263,
+      "slug": "doacao-recorrente-pequenas-contribuicoes-mensais",
+      "status": "published",
+      "url": "/doacao-recorrente-pequenas-contribuicoes-mensais/"
+    },
+    "secs": 79
+  },
+  "31": {
+    "ok": true,
+    "title": "Como destinar parte do Imposto de Renda para projetos de crianças (FIA/CMDCA)",
+    "article": {
+      "id": 264,
+      "slug": "como-destinar-imposto-de-renda-fia-cmdca",
+      "status": "published",
+      "url": "/como-destinar-imposto-de-renda-fia-cmdca/"
+    },
+    "secs": 56
+  },
+  "32": {
+    "ok": true,
+    "title": "Lei Rouanet: como empresas podem patrocinar projetos culturais sociais",
+    "article": {
+      "id": 265,
+      "slug": "lei-rouanet-patrocinio-empresa",
+      "status": "published",
+      "url": "/lei-rouanet-patrocinio-empresa/"
+    },
+    "secs": 50
+  },
+  "33": {
+    "ok": true,
+    "title": "Responsabilidade social empresarial: como sua empresa pode apoiar",
+    "article": {
+      "id": 266,
+      "slug": "responsabilidade-social-empresarial-como-sua-empresa-pode-apoiar",
+      "status": "published",
+      "url": "/responsabilidade-social-empresarial-como-sua-empresa-pode-apoiar/"
+    },
+    "secs": 84
+  },
+  "34": {
+    "ok": true,
+    "title": "Voluntariado: como ser voluntário em uma ONG em Bauru",
+    "article": {
+      "id": 267,
+      "slug": "como-ser-voluntario-em-uma-ong-em-bauru",
+      "status": "published",
+      "url": "/como-ser-voluntario-em-uma-ong-em-bauru/"
+    },
+    "secs": 50
+  },
+  "35": {
+    "ok": true,
+    "title": "Doação de itens: o que uma instituição social realmente precisa",
+    "article": {
+      "id": 268,
+      "slug": "o-que-doar-para-ong-guia-pratico",
+      "status": "published",
+      "url": "/o-que-doar-para-ong-guia-pratico/"
+    },
+    "secs": 98
+  },
+  "36": {
+    "ok": true,
+    "title": "Prêmio Responsabilidade Social Wise Madness: reconhecendo quem transforma",
+    "article": {
+      "id": 269,
+      "slug": "premio-responsabilidade-social-bauru-wise-madness",
+      "status": "published",
+      "url": "/premio-responsabilidade-social-bauru-wise-madness/"
+    },
+    "secs": 61
+  },
+  "37": {
+    "ok": true,
+    "title": "ESG na prática: o “S” do social e o papel das OSCs",
+    "article": {
+      "id": 270,
+      "slug": "esg-social-papel-das-oscs",
+      "status": "published",
+      "url": "/esg-social-papel-das-oscs/"
+    },
+    "secs": 71
+  },
+  "38": {
+    "ok": true,
+    "title": "Campanhas de arrecadação: como participar e divulgar",
+    "article": {
+      "id": 271,
+      "slug": "campanhas-de-arrecadacao-como-participar-e-divulgadar",
+      "status": "published",
+      "url": "/campanhas-de-arrecadacao-como-participar-e-divulgadar/"
+    },
+    "secs": 54
+  },
+  "39": {
+    "ok": true,
+    "title": "Vulnerabilidade social: o que é e como afeta crianças",
+    "article": {
+      "id": 272,
+      "slug": "vulnerabilidade-social-infantil-o-que-e-e-como-afeta-criancas",
+      "status": "published",
+      "url": "/vulnerabilidade-social-infantil-o-que-e-e-como-afeta-criancas/"
+    },
+    "secs": 16
+  },
+  "40": {
+    "ok": true,
+    "title": "Evasão escolar: como projetos sociais ajudam a combater",
+    "article": {
+      "id": 273,
+      "slug": "evasao-escolar-projetos-sociais",
+      "status": "published",
+      "url": "/evasao-escolar-projetos-sociais/"
+    },
+    "secs": 9
+  },
+  "41": {
+    "ok": true,
+    "title": "Primeiro emprego: preparando jovens para o mercado de trabalho",
+    "article": {
+      "id": 274,
+      "slug": "primeiro-emprego-jovem-mercado-trabalho",
+      "status": "published",
+      "url": "/primeiro-emprego-jovem-mercado-trabalho/"
+    },
+    "secs": 11
+  },
+  "42": {
+    "ok": true,
+    "title": "Saúde mental de crianças e adolescentes: sinais e cuidados",
+    "article": {
+      "id": 275,
+      "slug": "saude-mental-criancas-adolescentes-sinais-cuidados",
+      "status": "published",
+      "url": "/saude-mental-criancas-adolescentes-sinais-cuidados/"
+    },
+    "secs": 23
+  },
+  "43": {
+    "ok": true,
+    "title": "O papel da arte na autoestima de jovens da periferia",
+    "article": {
+      "id": 276,
+      "slug": "arte-e-autoestimas-jovens-periferia",
+      "status": "published",
+      "url": "/arte-e-autoestimas-jovens-periferia/"
+    },
+    "secs": 11
+  },
+  "44": {
+    "ok": true,
+    "title": "Educação socioemocional: o que é e por que importa",
+    "article": {
+      "id": 277,
+      "slug": "educacao-socioemocional-o-que-e-e-por-que-importa",
+      "status": "published",
+      "url": "/educacao-socioemocional-o-que-e-e-por-que-importa/"
+    },
+    "secs": 9
+  },
+  "45": {
+    "ok": true,
+    "title": "Como projetos sociais ajudam a prevenir a violência",
+    "article": {
+      "id": 278,
+      "slug": "projetos-sociais-prevencao-violencia",
+      "status": "published",
+      "url": "/projetos-sociais-prevencao-violencia/"
+    },
+    "secs": 8
+  },
+  "46": {
+    "ok": true,
+    "title": "Mobilidade e inclusão: por que o transporte importa para projetos sociais",
+    "article": {
+      "id": 279,
+      "slug": "mobilidade-e-inclusao-transporte-projeto-social",
+      "status": "published",
+      "url": "/mobilidade-e-inclusao-transporte-projeto-social/"
+    },
+    "secs": 8
+  },
+  "47": {
+    "ok": true,
+    "title": "Dia das Crianças solidário: ideias para ajudar",
+    "article": {
+      "id": 280,
+      "slug": "dia-das-criancas-solidario-ideias-para-ajudar",
+      "status": "published",
+      "url": "/dia-das-criancas-solidario-ideias-para-ajudar/"
+    },
+    "secs": 9
+  },
+  "48": {
+    "ok": true,
+    "title": "Natal solidário: como fazer a diferença para crianças atendidas",
+    "article": {
+      "id": 281,
+      "slug": "natal-solidario-como-fazer-a-diferenca",
+      "status": "published",
+      "url": "/natal-solidario-como-fazer-a-diferenca/"
+    },
+    "secs": 9
+  },
+  "49": {
+    "ok": true,
+    "title": "Histórias de transformação: o impacto de um projeto social na vida de um jovem",
+    "article": {
+      "id": 282,
+      "slug": "historias-de-transformacao-social-impacto",
+      "status": "published",
+      "url": "/historias-de-transformacao-social-impacto/"
+    },
+    "secs": 8
+  }
+}
