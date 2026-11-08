@@ -445,7 +445,7 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
                 </div>
                 {activeMainTenant && (
                   <a
-                    href={activeMainTenant.id === mainTenantId ? '/' : `/?tenant=${activeMainTenant.slug}`}
+                    href={`/?tenant=${activeMainTenant.slug}`}
                     target="_blank"
                     rel="noopener"
                     className="a-btn ghost sm"
@@ -661,7 +661,7 @@ export function TenantsManager({ initialTenants = [], initialMainTenantId = null
                         </button>
 
                         <a
-                          href={isMainTenant ? '/' : (t.custom_domain && t.domain_verified ? `https://${t.custom_domain}/` : `/?tenant=${t.slug}`)}
+                          href={t.custom_domain && t.domain_verified ? `https://${t.custom_domain}/?tenant=${t.slug}` : `/?tenant=${t.slug}`}
                           target="_blank"
                           rel="noopener"
                           className="a-btn ghost sm"
