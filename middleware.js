@@ -30,11 +30,30 @@ export function middleware(req) {
 
   // Suporte a parâmetro de tenant (?tenant=slug) e persistência de navegação
   const tenantParam = url.searchParams.get('tenant');
-  const devCookieTenant = req.cookies.get('mercatta_dev_tenant')?.value;
+  let devCookieTenant = req.cookies.get('mercatta_dev_tenant')?.value || null;
+
+  // O cookie de pré-visualização só vale enquanto o usuário navega DENTRO do blog
+  // (links internos não carregam ?tenant=). Se a pessoa digitar o endereço ou chegar
+  // de outro site, o domínio decide qual blog abrir e o cookie antigo é descartado.
+  let clearDevCookie = false;
+  if (!tenantParam && devCookieTenant && req.headers.get('sec-fetch-mode') === 'navigate') {
+    let sameSiteReferer = false;
+    try {
+      const ref = req.headers.get('referer');
+      sameSiteReferer = !!ref && new URL(ref).host.toLowerCase() === host.toLowerCase();
+    } catch {}
+    if (!sameSiteReferer) {
+      devCookieTenant = null;
+      clearDevCookie = true;
+    }
+  }
 
   const activeOverride = tenantParam || devCookieTenant || null;
   if (activeOverride) {
     requestHeaders.set('x-tenant-override', activeOverride);
+  }
+  if (clearDevCookie) {
+    requestHeaders.set('x-tenant-cookie-cleared', '1');
   }
 
   // Verifica se é o domínio hub institucional Mercatta
@@ -50,6 +69,8 @@ export function middleware(req) {
   // Salva no cookie ao navegar com ?tenant= para não perder o blog ao clicar em links
   if (tenantParam) {
     response.cookies.set('mercatta_dev_tenant', tenantParam, { path: '/', maxAge: 60 * 60 * 24 });
+  } else if (clearDevCookie) {
+    response.cookies.set('mercatta_dev_tenant', '', { path: '/', maxAge: 0 });
   }
 
   return response;
