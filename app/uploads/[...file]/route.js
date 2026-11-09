@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { NextResponse } from 'next/server';
+import { readStoredUpload, getUploadDir } from '@/lib/storage.js';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,6 +56,27 @@ export async function GET(req, ctx) {
     } catch {
       continue;
     }
+  }
+
+  // Fallback: cópia persistente no banco (o disco do container é zerado a cada deploy)
+  try {
+    const stored = await readStoredUpload(segments.join('/'));
+    if (stored) {
+      // Recria o cache em disco para as próximas leituras
+      getUploadDir()
+        .then((dir) => fs.writeFile(path.join(dir, path.basename(safeName)), stored.buffer))
+        .catch(() => {});
+      return new NextResponse(stored.buffer, {
+        status: 200,
+        headers: {
+          'Content-Type': stored.contentType || mime,
+          'Content-Length': String(stored.buffer.length),
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      });
+    }
+  } catch (err) {
+    console.error('[uploads] erro ao ler do banco:', err.message);
   }
 
   return new NextResponse('Arquivo não encontrado', { status: 404 });
