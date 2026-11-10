@@ -15,8 +15,9 @@ export const GET = route(async ({ req, user }) => {
   }
 
   const tenantFilter = tenantId ? `AND (i.tenant_id = ${Number(tenantId)} OR i.tenant_id IS NULL)` : '';
+  // Inclui as descartadas (status 'rejected'), exibidas na aba Lixeira
   const rows = await query(`SELECT i.*, p.slug AS post_slug FROM ideas i LEFT JOIN posts p ON p.id = i.post_id
-    WHERE i.status <> 'rejected' ${tenantFilter} ORDER BY i.id DESC LIMIT 100`);
+    WHERE 1=1 ${tenantFilter} ORDER BY i.id DESC LIMIT 300`);
   return json({ ideas: rows, ai: aiConfigured() });
 }, { admin: true });
 

@@ -11,10 +11,15 @@ export const maxDuration = 120;
  * Aprova a ideia: a IA escreve o artigo completo (padrões Google + SEO + busca por IA) e ele é salvo
  * como RASCUNHO com capa oficial gerada para o administrador revisar e ajustar tudo no editor antes de publicar.
  */
-export const POST = route(async ({ user, params }) => {
+export const POST = route(async ({ req, user, params }) => {
   const id = Number(params.id);
+  const opts = await req.json().catch(() => ({}));
+  const publish = opts?.publish === true;
   const idea = await queryOne('SELECT * FROM ideas WHERE id = $1', [id]);
   if (!idea) throw httpError(404, 'Ideia não encontrada.');
+  if (user.role !== 'superadmin' && user.tenant_id && idea.tenant_id && idea.tenant_id !== user.tenant_id) {
+    throw httpError(404, 'Ideia não encontrada.');
+  }
   if (idea.status === 'written' && idea.post_id) throw httpError(409, 'Esta ideia já virou um artigo.');
 
   await query("UPDATE ideas SET status = 'writing', error = NULL WHERE id = $1", [id]);
@@ -56,12 +61,13 @@ export const POST = route(async ({ user, params }) => {
       category_slugs: category ? [category] : [],
       ai_generated: true,
       tenant_id: tenantId,
-      action: 'draft',
+      action: publish ? 'publish' : 'draft',
     }, user);
     await query("UPDATE ideas SET status = 'written', post_id = $2 WHERE id = $1", [id, post.id]);
     return json({
       ok: true,
       post_id: post.id,
+      status: post.status,
       cover_url: cover?.url || null,
       cover_thumb: cover?.thumb || null,
       cover_prompt: a.cover_prompt || '',

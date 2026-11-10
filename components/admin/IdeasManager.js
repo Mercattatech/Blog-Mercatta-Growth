@@ -91,8 +91,87 @@ export default function IdeasManager({
     }
   }
   async function reject(idea) {
-    try { await api(`/api/admin/ideas/${idea.id}/`, { method: 'PATCH', data: { status: 'rejected' } }); setIdeas((cur) => cur.filter((i) => i.id !== idea.id)); toast('Ideia descartada. A IA vai evitar temas parecidos.'); }
-    catch (e) { toast(e.message, 'err'); }
+    try {
+      await api(`/api/admin/ideas/${idea.id}/`, { method: 'PATCH', data: { status: 'rejected' } });
+      setIdeas((cur) => cur.map((i) => (i.id === idea.id ? { ...i, status: 'rejected' } : i)));
+      setSelected((s) => { const n = new Set(s); n.delete(idea.id); return n; });
+      toast('Ideia enviada para a lixeira.');
+    } catch (e) { toast(e.message, 'err'); }
+  }
+
+  // ---------- Seleção e ações em massa ----------
+  const [tab, setTab] = useState('open');
+  const [selected, setSelected] = useState(() => new Set());
+  const [publishDirect, setPublishDirect] = useState(false);
+  const [bulk, setBulk] = useState(null); // { label, done, total }
+
+  const toggle = (id) => setSelected((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const clearSel = () => setSelected(new Set());
+  const switchTab = (t) => { setTab(t); clearSel(); };
+
+  async function bulkApprove() {
+    const ids = [...selected].filter((id) => open.some((i) => i.id === id && i.status !== 'writing'));
+    if (!ids.length) return;
+    const verb = publishDirect ? 'escrever e PUBLICAR' : 'escrever (como rascunho)';
+    if (!window.confirm(`A IA vai ${verb} ${ids.length} artigo(s), um de cada vez (cerca de 1 min cada).\n\nMantenha esta página aberta até terminar. Continuar?`)) return;
+    let ok = 0; const fails = [];
+    setBulk({ label: publishDirect ? 'Escrevendo e publicando' : 'Escrevendo', done: 0, total: ids.length });
+    for (let n = 0; n < ids.length; n++) {
+      const id = ids[n];
+      setWriting(id);
+      setIdeas((cur) => cur.map((i) => (i.id === id ? { ...i, status: 'writing' } : i)));
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await api(`/api/admin/ideas/${id}/approve/`, { method: 'POST', data: { publish: publishDirect } });
+        ok++;
+        setIdeas((cur) => cur.map((i) => (i.id === id ? { ...i, status: 'written', post_id: r.post_id } : i)));
+      } catch (e) {
+        fails.push(e.message);
+        setIdeas((cur) => cur.map((i) => (i.id === id ? { ...i, status: 'failed', error: e.message } : i)));
+      }
+      setBulk((b) => ({ ...b, done: n + 1 }));
+    }
+    setWriting(0); setBulk(null); clearSel();
+    toast(`${ok} artigo(s) ${publishDirect ? 'publicados' : 'criados como rascunho'}${fails.length ? ` · ${fails.length} falharam` : ''}.`, fails.length ? 'err' : 'ok');
+    router.refresh();
+  }
+
+  async function bulkStatus(status, idsOverride = null) {
+    const ids = idsOverride || [...selected];
+    if (!ids.length) return;
+    const restoring = status === 'suggested';
+    setBulk({ label: restoring ? 'Restaurando' : 'Movendo para a lixeira', done: 0, total: ids.length });
+    let ok = 0;
+    for (let n = 0; n < ids.length; n++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const r = await api(`/api/admin/ideas/${ids[n]}/`, { method: 'PATCH', data: { status } });
+        ok++;
+        setIdeas((cur) => cur.map((i) => (i.id === ids[n] ? { ...i, ...(r.idea || { status }) } : i)));
+      } catch (e) { toast(e.message, 'err'); }
+      setBulk((b) => ({ ...b, done: n + 1 }));
+    }
+    setBulk(null); clearSel();
+    toast(restoring ? `${ok} ideia(s) restaurada(s).` : `${ok} ideia(s) enviada(s) para a lixeira.`);
+  }
+
+  async function bulkDeleteForever() {
+    const ids = [...selected];
+    if (!ids.length) return;
+    if (!window.confirm(`Excluir DEFINITIVAMENTE ${ids.length} ideia(s)? Esta ação não pode ser desfeita.`)) return;
+    setBulk({ label: 'Excluindo', done: 0, total: ids.length });
+    let ok = 0;
+    for (let n = 0; n < ids.length; n++) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await api(`/api/admin/ideas/${ids[n]}/`, { method: 'DELETE' });
+        ok++;
+        setIdeas((cur) => cur.filter((i) => i.id !== ids[n]));
+      } catch (e) { toast(e.message, 'err'); }
+      setBulk((b) => ({ ...b, done: n + 1 }));
+    }
+    setBulk(null); clearSel();
+    toast(`${ok} ideia(s) excluída(s) definitivamente.`);
   }
   async function saveEdit(e) {
     e.preventDefault();
@@ -102,8 +181,12 @@ export default function IdeasManager({
     } catch (err) { toast(err.message, 'err'); }
   }
 
-  const open = ideas.filter((i) => i.status !== 'written');
+  const open = ideas.filter((i) => i.status !== 'written' && i.status !== 'rejected');
   const done = ideas.filter((i) => i.status === 'written');
+  const trash = ideas.filter((i) => i.status === 'rejected');
+  const list = tab === 'trash' ? trash : open;
+  const allSelected = list.length > 0 && list.every((i) => selected.has(i.id));
+  const busy = !!writing || gen || !!bulk;
 
   return (
     <>
@@ -152,19 +235,104 @@ export default function IdeasManager({
       </div>
       {!aiOn && <div className="a-note warn" style={{ marginBottom: 16 }}>A IA não está configurada. Crie uma chave gratuita no <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style={{ textDecoration: 'underline' }}>Google AI Studio</a> e coloque em <code>GEMINI_API_KEY</code> no arquivo <code>.env.local</code> (ou nas variáveis da Vercel). Reinicie o servidor.</div>}
 
-      {(writing > 0 || gen) && (
+      {(writing > 0 || gen) && !bulk && (
         <div className="writing" role="status" aria-live="polite">
           <div className="ai-orb" />
           <div><strong>{writing ? 'A IA está escrevendo o artigo…' : 'A IA está pesquisando boas pautas…'}</strong><br /><span className="muted">Pode levar de 20 a 90 segundos. Não feche esta página.</span></div>
         </div>
       )}
 
-      {open.length === 0 && !gen && (
-        <div className="a-card a-empty"><div className="big">💡</div><p>Nenhuma ideia pendente.<br />Clique em <b>Gerar novas ideias</b> para receber sugestões.</p></div>
+      {bulk && (
+        <div className="writing" role="status" aria-live="polite">
+          <div className="ai-orb" />
+          <div>
+            <strong>{bulk.label}: {bulk.done} de {bulk.total}…</strong><br />
+            <span className="muted">Não feche esta página até terminar.</span>
+            <div style={{ marginTop: 8, height: 6, borderRadius: 4, background: 'var(--line, #1e293b)', overflow: 'hidden', maxWidth: 320 }}>
+              <div style={{ width: `${Math.round((bulk.done / bulk.total) * 100)}%`, height: '100%', background: 'var(--accent, #22c55e)', transition: 'width .3s' }} />
+            </div>
+          </div>
+        </div>
       )}
 
-      {open.map((i, idx) => (
+      {/* Abas: Pendentes / Lixeira */}
+      <div style={{ display: 'flex', gap: '0.5rem', margin: '4px 0 12px' }}>
+        <button type="button" className={`a-btn sm ${tab === 'open' ? 'blue' : 'ghost'}`} onClick={() => switchTab('open')} disabled={busy}>
+          💡 Pendentes ({open.length})
+        </button>
+        <button type="button" className={`a-btn sm ${tab === 'trash' ? 'danger' : 'ghost'}`} onClick={() => switchTab('trash')} disabled={busy}>
+          <Icon name="trash" size={14} /> Lixeira ({trash.length})
+        </button>
+      </div>
+
+      {/* Barra de ações em massa */}
+      {list.length > 0 && (
+        <div className="a-card" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', padding: '0.7rem 1rem', marginBottom: 12, position: 'sticky', top: 8, zIndex: 5 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={() => (allSelected ? clearSel() : setSelected(new Set(list.map((i) => i.id))))}
+              disabled={busy}
+              style={{ width: 18, height: 18 }}
+            />
+            Selecionar todas
+          </label>
+          <span className="muted">{selected.size} selecionada(s)</span>
+          <div style={{ flex: 1 }} />
+          {tab === 'open' ? (
+            <>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.9rem' }} title="Se desmarcado, os artigos ficam como rascunho para revisão">
+                <input type="checkbox" checked={publishDirect} onChange={(e) => setPublishDirect(e.target.checked)} disabled={busy} style={{ width: 16, height: 16 }} />
+                Publicar direto
+              </label>
+              <button type="button" className="a-btn green sm" disabled={!selected.size || busy || !aiOn} onClick={bulkApprove}>
+                <Icon name="check" size={15} />{publishDirect ? 'Escrever e publicar' : 'Aprovar e escrever'} ({selected.size})
+              </button>
+              <button type="button" className="a-btn danger sm" disabled={!selected.size || busy} onClick={() => bulkStatus('rejected')}>
+                <Icon name="trash" size={15} />Mover para lixeira ({selected.size})
+              </button>
+            </>
+          ) : (
+            <>
+              <button type="button" className="a-btn blue sm" disabled={!selected.size || busy} onClick={() => bulkStatus('suggested')}>
+                ↩ Restaurar ({selected.size})
+              </button>
+              <button type="button" className="a-btn danger sm" disabled={!selected.size || busy} onClick={bulkDeleteForever}>
+                <Icon name="x" size={15} />Excluir definitivamente ({selected.size})
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {tab === 'open' && open.length === 0 && !gen && (
+        <div className="a-card a-empty"><div className="big">💡</div><p>Nenhuma ideia pendente.<br />Clique em <b>Sugerir pautas</b> para receber sugestões.</p></div>
+      )}
+      {tab === 'trash' && trash.length === 0 && (
+        <div className="a-card a-empty"><div className="big">🗑️</div><p>A lixeira está vazia.</p></div>
+      )}
+
+      {tab === 'trash' && trash.map((i) => (
+        <article className="idea" key={i.id}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+            <input type="checkbox" checked={selected.has(i.id)} onChange={() => toggle(i.id)} disabled={busy} style={{ width: 18, height: 18, marginTop: 4, flexShrink: 0 }} aria-label={`Selecionar ${i.title}`} />
+            <div>
+              <div className="meta"><span className="a-badge off">Na lixeira</span><span className="a-badge scheduled">{catName(i.category_slug)}</span></div>
+              <h3>{i.title}</h3>
+              {i.angle && <p>{i.angle}</p>}
+            </div>
+          </div>
+          <div className="side">
+            <button className="a-btn blue" disabled={busy} onClick={() => bulkStatus('suggested', [i.id])}>↩ Restaurar</button>
+          </div>
+        </article>
+      ))}
+
+      {tab === 'open' && open.map((i, idx) => (
         <article className="idea" key={i.id} style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+          <input type="checkbox" checked={selected.has(i.id)} onChange={() => toggle(i.id)} disabled={busy || i.status === 'writing'} style={{ width: 18, height: 18, marginTop: 4, flexShrink: 0 }} aria-label={`Selecionar ${i.title}`} />
           <div>
             <div className="meta">
               <span className={`a-badge ${STATUS[i.status]?.[1] || 'draft'}`}>{STATUS[i.status]?.[0] || i.status}</span>
@@ -183,12 +351,13 @@ export default function IdeasManager({
               </details>
             )}
           </div>
+          </div>
           <div className="side">
-            <button className="a-btn green" disabled={!!writing || gen || !aiOn || i.status === 'writing'} onClick={() => approve(i)}>
+            <button className="a-btn green" disabled={busy || !aiOn || i.status === 'writing'} onClick={() => approve(i)}>
               {i.status === 'writing' ? <><Spin />Escrevendo…</> : <><Icon name="check" size={16} />{i.status === 'failed' ? 'Tentar de novo' : 'Aprovar e escrever'}</>}
             </button>
-            <button className="a-btn ghost" disabled={!!writing} onClick={() => setEdit({ id: i.id, title: i.title, focus_keyword: i.focus_keyword || '', angle: i.angle || '', category_slug: i.category_slug || '' })}><Icon name="edit" size={15} />Ajustar ideia</button>
-            <button className="a-btn danger" disabled={!!writing} onClick={() => reject(i)}><Icon name="x" size={15} />Descartar</button>
+            <button className="a-btn ghost" disabled={busy} onClick={() => setEdit({ id: i.id, title: i.title, focus_keyword: i.focus_keyword || '', angle: i.angle || '', category_slug: i.category_slug || '' })}><Icon name="edit" size={15} />Ajustar ideia</button>
+            <button className="a-btn danger" disabled={busy} onClick={() => reject(i)}><Icon name="trash" size={15} />Lixeira</button>
           </div>
         </article>
       ))}
